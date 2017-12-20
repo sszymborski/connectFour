@@ -2,13 +2,13 @@
 
 using namespace std;
 
-int board[7][6];    // 7 fields horizontally and 6 fields vertically    //0 when empty, 1 when red player, -1 when yellow player
+int board[6][7];    // 7 fields horizontally and 6 fields vertically    //0 when empty, 1 when red player, -1 when yellow player
 
 bool checkWinNow()   // tests whether someone has won on the board at the moment
 {
     int actual;
-    for(int i = 0; i < 7; ++i)   // tests 4 fields vertically to up
-        for(int j = 0; j < 3; ++j)
+    for(int i = 0; i < 6; ++i)   // tests 4 fields vertically to up
+        for(int j = 0; j < 4; ++j)
             if(board[i][j] != 0)
             {
                 actual = board[i][j];
@@ -23,8 +23,8 @@ bool checkWinNow()   // tests whether someone has won on the board at the moment
                     return true;
                 }
             }
-    for(int i = 0; i < 4; ++i)   // tests 4 fields horizontally to right
-        for(int j = 0; j < 6; ++j)
+    for(int i = 0; i < 3; ++i)   // tests 4 fields horizontally to right
+        for(int j = 0; j < 7; ++j)
             if(board[i][j] != 0)
             {
                 actual = board[i][j];
@@ -39,8 +39,8 @@ bool checkWinNow()   // tests whether someone has won on the board at the moment
                     return true;
                 }
             }
-    for(int i = 0; i < 4; ++i)   // tests 4 fields across to up and right
-        for(int j = 0; j < 3; ++j)
+    for(int i = 0; i < 3; ++i)   // tests 4 fields across to up and right
+        for(int j = 0; j < 4; ++j)
             if(board[i][j] != 0)
             {
                 actual = board[i][j];
@@ -55,8 +55,8 @@ bool checkWinNow()   // tests whether someone has won on the board at the moment
                     return true;
                 }
             }
-    for(int i = 0; i < 4; ++i)   // tests 4 fields across to down and right
-        for(int j = 3; j < 6; ++j)
+    for(int i = 0; i < 3; ++i)   // tests 4 fields across to down and right
+        for(int j = 3; j < 7; ++j)
             if(board[i][j] != 0)
             {
                 actual = board[i][j];
@@ -77,16 +77,42 @@ bool checkWinNow()   // tests whether someone has won on the board at the moment
 
 void clearField()
 {
-    for(int i = 0; i < 7; ++i)
-        for(int j = 0; j < 6; ++j)
+    for(int i = 0; i < 6; ++i)
+        for(int j = 0; j < 7; ++j)
             board[i][j]=0;
+}
+
+void showWindow()
+{
+    for(int i = 0; i < 6; ++i)
+    {
+        for(int j = 0; j < 7; ++j)
+        {
+            if(board[i][j]==0)
+                cout << "O";
+            if(board[i][j]==1)
+                cout << "R";
+            if(board[i][j] == -1)
+                cout << "Y";
+            cout << "\t";
+        }
+        cout << endl;
+    }
 }
 
 int main()
 {
     cout << "Hello world!" << endl;
     clearField();
+    board[1][1] = 1;
+    board[2][2] = 1;
+    board[3][3] = 1;
+    board[4][4] = 1;
+
+
+
     if(checkWinNow())
         cout << "Win" << endl;
+    showWindow();
     return 0;
 }
