@@ -35,8 +35,8 @@ int main()
 
     clear_to_color( screen, makecol( 128, 128, 128 ) ); //kolor okna
     bufor = create_bitmap( szerokosc*kratka, wysokosc*kratka ); //rozmiar
-    czerwony = load_bmp("czerwony.bmp",default_palette);
-    zolty = load_bmp("zolty.bmp",default_palette);
+    //czerwony = load_bmp("czerwony.bmp",default_palette);
+    //zolty = load_bmp("zolty.bmp",default_palette);
 
     install_mouse(); //mysz
     //select_mouse_cursor(MOUSE_CURSOR_BUSY); //inny kursor myszki
