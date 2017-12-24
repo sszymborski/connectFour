@@ -11,8 +11,8 @@
 using namespace std;
 
 BITMAP * bufor = NULL;
-BITMAP * czerwony = NULL
-BITMAP * zolty = NULL
+BITMAP * czerwony = NULL;
+BITMAP * zolty = NULL;
 int mx, my, mb;
 
 void myszka() //funkcja obslugujaca mysz na ekranie
