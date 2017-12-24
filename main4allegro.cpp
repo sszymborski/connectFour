@@ -25,8 +25,26 @@ void myszka() //funkcja obslugujaca mysz na ekranie
     }
 }
 
+void czerwonyNaPole(int x, int y)
+{
+        masked_blit( czerwony, bufor, 0, 0, x*kratka, y*kratka, kratka, kratka );
+}
+
+void zoltyNaPole(int x, int y)
+{
+       masked_blit( zolty, bufor, 0, 0, x*kratka, y*kratka, kratka, kratka );
+}
+
+
 int main()
 {
+
+    int tablicaDoGry[7][6];
+
+    for(int i = 0; i < 7; ++i)
+        for(int j = 0; j < 6; ++j)
+            tablicaDoGry[i][j] = 0;
+
     mx = my = mb = 0;
     allegro_init();
     install_keyboard();
@@ -35,8 +53,8 @@ int main()
 
     clear_to_color( screen, makecol( 128, 128, 128 ) ); //kolor okna
     bufor = create_bitmap( szerokosc*kratka, wysokosc*kratka ); //rozmiar
-    //czerwony = load_bmp("czerwony.bmp",default_palette);
-    //zolty = load_bmp("zolty.bmp",default_palette);
+    czerwony = load_bmp("czerwony.bmp",default_palette);
+    zolty = load_bmp("zolty.bmp",default_palette);
 
     install_mouse(); //mysz
     //select_mouse_cursor(MOUSE_CURSOR_BUSY); //inny kursor myszki
@@ -58,17 +76,35 @@ int main()
         {
             hline(bufor, 0, i*kratka, szerokosc*kratka, makecol(255,255,255));
         }
-        blit( bufor, screen, 0, 0, 0, 0, szerokosc*kratka, wysokosc*kratka ); //przeniesienie z bufora na ekran
-        rest(100);
 
-        int x=NULL, y=NULL;
+
+                int x=NULL, y=NULL;
                 if(mb==1)
                 {
                     x=floor(mx/kratka); //przerobienie pikseli na wspolrzedne pola
                     y=floor(my/kratka);
-                    cout << x << " " << y << endl;
+                    cout << "czerwony na " << x << " " << y << endl;
+                    tablicaDoGry[x][y]=1;
+                }
+                if(mb==2)
+                {
+                    x=floor(mx/kratka); //przerobienie pikseli na wspolrzedne pola
+                    y=floor(my/kratka);
+                    cout << "zolty na " << x << " " << y << endl;
+                    tablicaDoGry[x][y]=-1;
                 }
 
+    for(int i = 0; i < 7; ++i)
+        for(int j = 0; j < 6; ++j)
+            if(tablicaDoGry[i][j] == 1)
+                czerwonyNaPole(i,j);
+            else if(tablicaDoGry[i][j]==-1)
+                zoltyNaPole(i,j);
+
+
+
+        blit( bufor, screen, 0, 0, 0, 0, szerokosc*kratka, wysokosc*kratka ); //przeniesienie z bufora na ekran
+        rest(100);
     }
     destroy_bitmap( bufor ); //zwalanianie pamieci
 
