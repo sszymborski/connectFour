@@ -20,7 +20,6 @@ Gui::Gui()
     install_mouse(); //mysz
     //select_mouse_cursor(MOUSE_CURSOR_BUSY); //inny kursor myszki
     show_mouse( screen ); //wyswietlanie myszy na ekranie
-    unscare_mouse();
 }
 
 Gui::~Gui()
@@ -47,18 +46,35 @@ int Gui::myszka(int **tab) //funkcja obslugujaca mysz na ekranie
     {
         x = floor(mx/KRATKA); //przerobienie pikseli na wspolrzedne pola
         y = floor(my/KRATKA);
-        std::cout << "czerwony na " << x << " " << y << std::endl;
-        tab[x][y] = RED;
-        return 1;
+
+        if(tab[x][0] != 0) //jesli w kolumnie nie ma już miejsca na klocek
+            return 0;
+        else
+            for(int j = WYSOKOSC-1; j >= 0; j--)
+                if(tab[x][j] == 0)
+                {
+                    std::cout << "czerwony na " << x << " " << j << std::endl;
+                    tab[x][j] = RED;
+                    return 1;
+                }
     }
-    if(mb == 2)
+    else if(mb == 2)
     {
         x = floor(mx/KRATKA); //przerobienie pikseli na wspolrzedne pola
         y = floor(my/KRATKA);
-        std::cout << "zolty na " << x << " " << y << std::endl;
-        tab[x][y] = YELLOW;
-        return 2;
+
+        if(tab[x][0] != 0) //jesli w kolumnie nie ma już miejsca na klocek
+            return 0;
+        else
+            for(int j = WYSOKOSC-1; j >= 0; j--)
+                if(tab[x][j] == 0)
+                {
+                    std::cout << "zolty na " << x << " " << j << std::endl;
+                    tab[x][j] = YELLOW;
+                    return 2;
+                }
     }
+
     return 0;
 }
 
@@ -88,6 +104,6 @@ void Gui::wyswietl(int **tab)
         }
 
     blit( bufor, screen, 0, 0, 0, 0, SZEROKOSC*KRATKA, WYSOKOSC*KRATKA ); //przeniesienie z bufora na ekran
-    rest(100);
+    rest(300);
     unscare_mouse();
 }
