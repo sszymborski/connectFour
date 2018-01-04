@@ -26,7 +26,7 @@ Gui::~Gui()
     allegro_exit();
 }
 
-int Gui::mouse(int **tab) //funkcja obslugujaca mysz na ekranie
+int Gui::mouse() //funkcja obslugujaca mysz na ekranie
 {
     if(key[ KEY_ESC ])
         return -1;
@@ -36,38 +36,14 @@ int Gui::mouse(int **tab) //funkcja obslugujaca mysz na ekranie
         my = mouse_y;
         mb = mouse_b;
     }
-    int x = 0, y = 0;
+    int x = 0; // y = 0;
     if(mb == 1)
     {
         x = floor(mx/PUCK); //przerobienie pikseli na wspolrzedne pola
-        y = floor(my/PUCK);
-        if(tab[x][0] != 0) //jesli w kolumnie nie ma ju¿ miejsca na klocek
-            return 0;
-        else
-            for(int j = HEIGHT-1; j >= 0; j--)
-                if(tab[x][j] == 0)
-                {
-                    cout << "Red on " << "\t" << "\t" << x << " " << j << endl;
-                    tab[x][j] = RED;
-                    return 1;
-                }
+        //y = floor(my/PUCK);
+        return x;
     }
-    else if(mb == 2)
-    {
-        x = floor(mx/PUCK); //przerobienie pikseli na wspolrzedne pola
-        y = floor(my/PUCK);
-        if(tab[x][0] != 0) //jesli w kolumnie nie ma ju¿ miejsca na klocek
-            return 0;
-        else
-            for(int j = HEIGHT-1; j >= 0; j--)
-                if(tab[x][j] == 0)
-                {
-                    cout << "Yellow on " << "\t" << x << " " << j << endl;
-                    tab[x][j] = YELLOW;
-                    return 2;
-                }
-    }
-    return 0;
+    return -2; //nic sie nie stalo
 }
 
 void Gui::show(int **tab)
