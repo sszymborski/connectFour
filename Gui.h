@@ -15,12 +15,11 @@ class Gui
     BITMAP * red;
     BITMAP * yellow;
     int mx, my, mb;
-    bool whoPlay; //doPVP
 
 public:
     Gui();
     ~Gui();
-    int mouse(int **tab); //-1 -> ESC; 1 -> LPM; 2 -> PPM; 0 - nic
+    int mouse(); //-1 -> ESC; 1 -> LPM; 2 -> PPM; 0 - nic
     void show(int **tab); //funkcja wyswietlajaca bitmapy na ekran
 };
 

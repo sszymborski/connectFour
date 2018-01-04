@@ -14,6 +14,7 @@ class Game
 {
     int mode; //rozroznia tryb gracz vs AI oraz AI vs AI
     int **board;
+    bool whoPlay;
     Gui *gui;
 
 public:
