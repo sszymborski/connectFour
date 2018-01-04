@@ -15,6 +15,7 @@ class Gui
     BITMAP * red;
     BITMAP * yellow;
     int mx, my, mb;
+    bool whoPlay; //doPVP
 
 public:
     Gui();

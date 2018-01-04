@@ -18,6 +18,7 @@ Gui::Gui()
     install_mouse(); //mysz
     //select_mouse_cursor(MOUSE_CURSOR_BUSY); //inny kursor myszki
     show_mouse( screen ); //wyswietlanie myszy na ekranie
+    whoPlay=1;//do PVP
 }
 
 Gui::~Gui()
@@ -47,12 +48,24 @@ int Gui::mouse(int **tab) //funkcja obslugujaca mysz na ekranie
             for(int j = HEIGHT-1; j >= 0; j--)
                 if(tab[x][j] == 0)
                 {
+                    if(whoPlay)
+                    {
                     cout << "Red on " << "\t" << "\t" << x << " " << j << endl;
                     tab[x][j] = RED;
+                    whoPlay=!whoPlay;
                     return 1;
+                    }
+                    else
+                    {
+                    cout << "Yellow on " << "\t" << x << " " << j << endl;
+                    tab[x][j] = YELLOW;
+                    whoPlay=!whoPlay;
+                    return 2;
+                    }
+
                 }
     }
-    else if(mb == 2)
+   /* else if(mb == 2)
     {
         x = floor(mx/PUCK); //przerobienie pikseli na wspolrzedne pola
         y = floor(my/PUCK);
@@ -66,7 +79,7 @@ int Gui::mouse(int **tab) //funkcja obslugujaca mysz na ekranie
                     tab[x][j] = YELLOW;
                     return 2;
                 }
-    }
+    } */
     return 0;
 }
 
