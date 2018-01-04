@@ -10,7 +10,6 @@ Game::Game()
     for(int i = 0; i < WIDTH; ++i)
         for(int j = 0; j < HEIGHT; ++j)
             board[i][j] = 0;
-    whoPlay=1;
 }
 
 Game::~Game()
@@ -23,39 +22,16 @@ Game::~Game()
 
 void Game::start()
 {
-    int colNumber;
+    int inputCode;
     gui->show(board);
     while(1)
     {
-        colNumber = gui->mouse();
+        inputCode = gui->mouse(board);
         //dzieki temu if-owi obraz rysowany jest nie bez przerwy, ale tylko jak jest jakis input
-        if(colNumber != -2) //kiedy zostal wcisniety klawisz myszki lub ESC
+        if(inputCode != 0) //kiedy zostal wcisniety klawisz myszki lub ESC
         {
-            if(colNumber != -1)
-            {
-                if(board[colNumber][0] != 0) //jesli w kolumnie nie ma ju¿ miejsca na klocek
-                    continue;
-                for(int j = HEIGHT-1; j >= 0; --j)
-                    if(board[colNumber][j] == 0)
-                    {
-                        if(whoPlay)
-                        {
-                            cout << "Red on " << "\t" << "\t" << colNumber << " " << j << endl;
-                            board[colNumber][j] = RED;
-                            whoPlay=!whoPlay;
-                            break;
-                        }
-                        else
-                        {
-                            cout << "Yellow on " << "\t" << colNumber << " " << j << endl;
-                            board[colNumber][j] = YELLOW;
-                            whoPlay=!whoPlay;
-                            break;
-                        }
-                    }
-            }
             gui->show(board);
-            if(checkWin() || colNumber == -1)
+            if(checkWin() || inputCode == -1)
             {
                 cout << "END OF THE GAME" << endl;
                 break;
@@ -75,11 +51,11 @@ bool Game::checkWin()   // tests whether someone has won on the board at the mom
                 if(actual == board[i][j-1] && actual == board[i][j-2] && actual == board[i][j-3])
                 {
                     cout << "Win by "
-                         << i << "x" << j << ", "
-                         << i << "x" << j-1 <<", "
-                         << i << "x" << j-2 <<", "
-                         << i << "x" << j-3 << "."
-                         << endl;
+                              << i << "x" << j << ", "
+                              << i << "x" << j-1 <<", "
+                              << i << "x" << j-2 <<", "
+                              << i << "x" << j-3 << "."
+                              << endl;
                     return true;
                 }
             }
@@ -91,11 +67,11 @@ bool Game::checkWin()   // tests whether someone has won on the board at the mom
                 if(actual == board[i+1][j] && actual == board[i+2][j] && actual == board[i+3][j])
                 {
                     cout << "Win by "
-                         << i << "x" << j << ", "
-                         << i+1 << "x" << j <<", "
-                         << i+2 << "x" << j <<", "
-                         << i+3 << "x" << j << "."
-                         << endl;
+                              << i << "x" << j << ", "
+                              << i+1 << "x" << j <<", "
+                              << i+2 << "x" << j <<", "
+                              << i+3 << "x" << j << "."
+                              << endl;
                     return true;
                 }
             }
@@ -107,11 +83,11 @@ bool Game::checkWin()   // tests whether someone has won on the board at the mom
                 if(actual == board[i+1][j-1] && actual == board[i+2][j-2] && actual == board[i+3][j-3])
                 {
                     cout << "Win by "
-                         << i << "x" << j << ", "
-                         << i+1 << "x" << j-1 <<", "
-                         << i+2 << "x" << j-2 <<", "
-                         << i+3 << "x" << j-3 << "."
-                         << endl;
+                              << i << "x" << j << ", "
+                              << i+1 << "x" << j-1 <<", "
+                              << i+2 << "x" << j-2 <<", "
+                              << i+3 << "x" << j-3 << "."
+                              << endl;
                     return true;
                 }
             }
@@ -123,11 +99,11 @@ bool Game::checkWin()   // tests whether someone has won on the board at the mom
                 if(actual == board[i+1][j+1] && actual == board[i+2][j+2] && actual == board[i+3][j+3])
                 {
                     cout << "Win by "
-                         << i << "x" << j << ", "
-                         << i+1 << "x" << j+1 <<", "
-                         << i+2 << "x" << j+2 <<", "
-                         << i+3 << "x" << j+3 << "."
-                         << endl;
+                              << i << "x" << j << ", "
+                              << i+1 << "x" << j+1 <<", "
+                              << i+2 << "x" << j+2 <<", "
+                              << i+3 << "x" << j+3 << "."
+                              << endl;
                     return true;
                 }
             }
