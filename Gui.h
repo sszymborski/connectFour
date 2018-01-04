@@ -5,20 +5,22 @@
 #include <cmath>
 #include <cstdlib>
 
-#define KRATKA 100
+#define PUCK 100
+
+using namespace std;
 
 class Gui
 {
-    BITMAP * bufor;
-    BITMAP * czerwony;
-    BITMAP * zolty;
+    BITMAP * buffer;
+    BITMAP * red;
+    BITMAP * yellow;
     int mx, my, mb;
 
-    public:
-        Gui();
-        ~Gui();
-        int myszka(int **tab); //-1 -> ESC; 1 -> LPM; 2 -> PPM; 0 - nic
-        void wyswietl(int **tab); //funkcja wyswietlajaca bitmapy na ekran
+public:
+    Gui();
+    ~Gui();
+    int mouse(int **tab); //-1 -> ESC; 1 -> LPM; 2 -> PPM; 0 - nic
+    void show(int **tab); //funkcja wyswietlajaca bitmapy na ekran
 };
 
 #endif // GUI_H

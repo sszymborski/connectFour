@@ -1,15 +1,12 @@
-#include <iostream>
-#include "Gra.h"
-#include "Gui.h"
+#include "Game.h"
 
 using namespace std;
 
 int main()
 {
-    Gra *gra = new Gra();
-    gra->graj();
-    delete gra;
-
+    Game *game = new Game();
+    game->start();
+    delete game;
     return 0;
 }
-//END_OF_MAIN();
+END_OF_MAIN();
