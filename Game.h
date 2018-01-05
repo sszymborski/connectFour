@@ -2,6 +2,7 @@
 #define GAME_H
 
 #include "Gui.h"
+#include "AI.h"
 
 #define WIDTH 7
 #define HEIGHT 6
