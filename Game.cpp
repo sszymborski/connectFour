@@ -1,4 +1,5 @@
 #include "Game.h"
+
 #include <iostream>
 
 Game::Game()
@@ -23,6 +24,7 @@ Game::~Game()
 
 void Game::start()
 {
+    AI *ai = new AI ();
     int colNumber;
     gui->show(board);
     while(1)
@@ -38,20 +40,18 @@ void Game::start()
                 for(int j = HEIGHT-1; j >= 0; --j)
                     if(board[colNumber][j] == 0)
                     {
-                        if(whoPlay)
-                        {
-                            cout << "Red on " << "\t" << "\t" << colNumber << " " << j << endl;
-                            board[colNumber][j] = RED;
-                            whoPlay=!whoPlay;
-                            break;
-                        }
-                        else
-                        {
-                            cout << "Yellow on " << "\t" << colNumber << " " << j << endl;
-                            board[colNumber][j] = YELLOW;
-                            whoPlay=!whoPlay;
-                            break;
-                        }
+
+                        cout << "Red on " << "\t" << "\t" << colNumber << " " << j << endl;
+                        board[colNumber][j] = RED;
+                        break;
+                    }
+                colNumber = ai -> doRandMove();
+                for(int j = HEIGHT-1; j >= 0; --j)
+                    if(board[colNumber][j] == 0)
+                    {
+                        cout << "Yellow on " << "\t" << colNumber << " " << j << endl;
+                        board[colNumber][j] = YELLOW;
+                        break;
                     }
             }
             gui->show(board);
