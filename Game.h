@@ -19,7 +19,7 @@ class Game
     Gui *gui;
 
 public:
-    Game();
+    Game(int);
     ~Game();
     void start();
     bool checkWin();

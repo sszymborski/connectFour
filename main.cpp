@@ -4,7 +4,8 @@ using namespace std;
 
 int main()
 {
-    Game *game = new Game();
+    int mode = 2;
+    Game *game = new Game(mode);
     game->start();
     delete game;
     return 0;
