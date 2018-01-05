@@ -19,6 +19,8 @@ class Gui
 public:
     Gui();
     ~Gui();
+    void mouse();
+    int showStartWindow();
     int getInput(); //-1 -> ESC; 1 -> LPM; 2 -> PPM; 0 - nic
     void display(int **tab); //funkcja wyswietlajaca bitmapy na ekran
 };

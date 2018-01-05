@@ -23,18 +23,41 @@ Game::~Game()
 {
     delete gui;
     delete ai;
-
     for(int i = 0; i < WIDTH; ++i)
         delete board[i];
-
     delete board;
 }
 
 void Game::start()
 {
-    int colNumber;
-    gui->display(board);
-    while(1)
+    mode = gui->showStartWindow();
+    cout << "Tryb to " << mode << endl;
+    int colNumber, aiNumber;
+    int first = 1; // zmienna ktora odpowiada za mozliwosc ponownego ruchu gracza bez ruchu ai w momencie braku miejsca w kolumnie
+
+    if(mode == 2)
+    {
+        do
+        {
+            aiNumber = ai -> doRandMove();
+        }
+        while(board[aiNumber][0] != 0);
+
+        for(int j = HEIGHT-1; j >= 0; --j)
+            if(board[aiNumber][j] == 0)
+            {
+                cout << "Yellow on " << "\t" << aiNumber << " " << j << endl;
+                board[aiNumber][j] = YELLOW;
+                break;
+            }
+
+    }
+
+        if(mode!=-1)
+        gui->display(board);
+
+
+    while(mode!=-1)
     {
         colNumber = gui->getInput();
         //dzieki temu if-owi obraz rysowany jest nie bez przerwy, ale tylko jak jest jakis input
@@ -45,7 +68,7 @@ void Game::start()
                 cout << "END OF THE GAME" << endl;
                 break;
             }
-            if(mode == 1)       // gracz vs ai
+            if(mode == 1 || mode == 2)       // gracz vs ai lub ai vs gracz(wtedy ruch byl wczesniej juz)
             {
                 if(board[colNumber][0] != 0) //jesli w kolumnie nie ma ju¿ miejsca na klocek
                     continue;
@@ -70,7 +93,7 @@ void Game::start()
                         break;
                     }
             }
-            else if(mode == 2)
+            else if (mode == 3)    // ai kontra ai
             {
                 do
                 {
@@ -97,17 +120,17 @@ void Game::start()
                         }
                     }
             }
-        }
-        gui->display(board);
-        if(checkWin()) // jesli wygrana
-        {
-            cout << "END OF THE GAME" << endl;
-            while(1)
+            gui->display(board);
+            if(checkWin()) // jesli wygrana
             {
-                if(gui->getInput() == -1)
-                    break;
+                cout << "END OF THE GAME" << endl;
+                while(1)
+                {
+                    if(gui->getInput() == -1)
+                        break;
+                }
+                break;
             }
-            break;
         }
     }
 }

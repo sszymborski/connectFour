@@ -26,17 +26,51 @@ Gui::~Gui()
     allegro_exit();
 }
 
-int Gui::getInput() //funkcja obslugujaca mysz na ekranie
+void Gui::mouse()
 {
-    if(key[ KEY_ESC ])
-        return -1;
-
     if( mx != mouse_x || my != mouse_y || mb != mouse_b ) //stale przypisywanie wspolrzednych kursora i stanu przycisku do zmiennych
     {
         mx = mouse_x;
         my = mouse_y;
         mb = mouse_b;
     }
+}
+
+int Gui::showStartWindow() //funkcja obslugujaca mysz na ekranie
+{
+    while(!key[ KEY_ESC ])
+    {
+        scare_mouse();
+        clear_to_color( buffer, makecol( 150, 150, 150 ) ); //kolor tla
+
+        textprintf_ex( buffer, font, 100, 350, makecol( 200, 200, 200 ), - 1, "PLAYER VS AI"); //opis slowny typow wiez
+        textprintf_ex( buffer, font, 300, 350, makecol( 200, 200, 200 ), - 1, "AI VS PLAYER");
+        textprintf_ex( buffer, font, 500, 350, makecol( 200, 200, 200 ), - 1, "AI VS AI");
+
+        blit( buffer, screen, 0, 0, 0, 0, WIDTH*PUCK, HEIGHT*PUCK ); //przeniesienie z buffera na ekran
+        unscare_mouse();
+        // rest(250);
+        mouse();
+        cout << mx << " " << my << endl;
+        if(mb==1)
+        {
+            if(mx>80 && mx<220 && my>240 &&my<380)
+                return 1;
+            if(mx>270 && mx<430 && my>240 &&my<380)
+                return 2;
+            if(mx>470 && mx<610 && my>240 &&my<380)
+                return 3;
+        }
+    }
+    return -1;
+}
+
+int Gui::getInput() //funkcja obslugujaca mysz na ekranie
+{
+    if(key[ KEY_ESC ])
+        return -1;
+
+    mouse();
 
     int x = 0; // y = 0;
     if(mb == 1)
