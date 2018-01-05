@@ -26,16 +26,18 @@ Gui::~Gui()
     allegro_exit();
 }
 
-int Gui::mouse() //funkcja obslugujaca mysz na ekranie
+int Gui::getInput() //funkcja obslugujaca mysz na ekranie
 {
     if(key[ KEY_ESC ])
         return -1;
+
     if( mx != mouse_x || my != mouse_y || mb != mouse_b ) //stale przypisywanie wspolrzednych kursora i stanu przycisku do zmiennych
     {
         mx = mouse_x;
         my = mouse_y;
         mb = mouse_b;
     }
+
     int x = 0; // y = 0;
     if(mb == 1)
     {
@@ -43,15 +45,17 @@ int Gui::mouse() //funkcja obslugujaca mysz na ekranie
         //y = floor(my/PUCK);
         return x;
     }
+
     return -2; //nic sie nie stalo
 }
 
-void Gui::show(int **tab)
+void Gui::display(int **tab)
 {
     scare_mouse();
     clear_to_color( buffer, makecol( 150, 150, 150 ) ); //kolor tla
     //textprintf_ex( buffer, font, 250, 40, makecol( 200, 200, 200 ), - 1, "GRAJ"); //napis
     //clear_to_color( buffer, makecol( 150, 150, 150 ) ); //kolor
+
     for(int i = 1; i < HEIGHT; i++)
         hline(buffer, 0, i*PUCK, WIDTH*PUCK, makecol(255,255,255));  //rysowanie siatki pol
     for(int i = 1; i < WIDTH; i++)
@@ -63,7 +67,8 @@ void Gui::show(int **tab)
                 masked_blit( red, buffer, 0, 0, i*PUCK, j*PUCK, PUCK, PUCK );
             else if(tab[i][j] == YELLOW)
                 masked_blit( yellow, buffer, 0, 0, i*PUCK, j*PUCK, PUCK, PUCK );
+
     blit( buffer, screen, 0, 0, 0, 0, WIDTH*PUCK, HEIGHT*PUCK ); //przeniesienie z buffera na ekran
-    rest(300);
     unscare_mouse();
+    rest(250);
 }

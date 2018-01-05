@@ -15,13 +15,18 @@ class Game
 {
     int mode; //rozroznia tryb gracz vs AI oraz AI vs AI
     int **board;
-    bool whoPlay;
+    bool whoPlays;
+
     Gui *gui;
+    AI *ai;
 
 public:
-    Game(int);
+    Game(int modeArg);
     ~Game();
+
     void start();
+
+private:
     bool checkWin();
 };
 

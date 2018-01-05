@@ -2,112 +2,116 @@
 
 #include <iostream>
 
-Game::Game(int a)
+Game::Game(int modeArg)
 {
-    mode = a;
+    mode = modeArg;
+    whoPlays = 1;
+
     gui = new Gui();
+    ai = new AI(5);
     board = new int* [WIDTH];
+
     for(int i = 0; i < WIDTH; ++i)
         board[i] = new int[HEIGHT];
+
     for(int i = 0; i < WIDTH; ++i)
         for(int j = 0; j < HEIGHT; ++j)
             board[i][j] = 0;
-    whoPlay=1;
 }
 
 Game::~Game()
 {
     delete gui;
+    delete ai;
+
     for(int i = 0; i < WIDTH; ++i)
         delete board[i];
+
     delete board;
 }
 
 void Game::start()
 {
-    AI *ai = new AI ();
     int colNumber;
-    gui->show(board);
+    gui->display(board);
     while(1)
     {
-        colNumber = gui->mouse();
+        colNumber = gui->getInput();
         //dzieki temu if-owi obraz rysowany jest nie bez przerwy, ale tylko jak jest jakis input
         if(colNumber != -2) //kiedy zostal wcisniety klawisz myszki lub ESC
         {
-            if(colNumber != -1) // kiedy zostal wcisniety klawisz myszki
-            {
-                if(mode == 1)       // gracz vs ai
-                {
-                    if(board[colNumber][0] != 0) //jesli w kolumnie nie ma ju¿ miejsca na klocek
-                        continue;
-                    for(int j = HEIGHT-1; j >= 0; --j)
-                        if(board[colNumber][j] == 0)
-                        {
-
-                            cout << "Red on " << "\t" << "\t" << colNumber << " " << j << endl;
-                            board[colNumber][j] = RED;
-                            break;
-                        }
-                    do
-                    {
-                        colNumber = ai -> doRandMove();
-                    }
-                    while(board[colNumber][0] != 0);
-
-                    for(int j = HEIGHT-1; j >= 0; --j)
-                        if(board[colNumber][j] == 0)
-                        {
-                            cout << "Yellow on " << "\t" << colNumber << " " << j << endl;
-                            board[colNumber][j] = YELLOW;
-                            break;
-                        }
-                }
-                else if(mode == 2)
-                {
-                    do
-                    {
-                        colNumber = ai -> doRandMove();
-                    }
-                    while(board[colNumber][0] != 0);
-                    for(int j = HEIGHT-1; j >= 0; --j)
-                        if(board[colNumber][j] == 0)
-                        {
-                            if(whoPlay)
-                            {
-                                cout << "Red on " << "\t" << "\t" << colNumber << " " << j << endl;
-                                board[colNumber][j] = RED;
-                                whoPlay=!whoPlay;
-                                break;
-                            }
-                            else
-                            {
-                                cout << "Yellow on " << "\t" << colNumber << " " << j << endl;
-                                board[colNumber][j] = YELLOW;
-                                whoPlay=!whoPlay;
-                                break;
-                            }
-                        }
-                }
-            }
-            gui->show(board);
             if(colNumber == -1) // jesli esc
             {
                 cout << "END OF THE GAME" << endl;
                 break;
             }
-            if(checkWin()) // jesli wygrana
+            if(mode == 1)       // gracz vs ai
             {
-                cout << "END OF THE GAME" << endl;
-                while(1)
-                {
-                    if(gui->mouse()==-1)
+                if(board[colNumber][0] != 0) //jesli w kolumnie nie ma ju¿ miejsca na klocek
+                    continue;
+                for(int j = HEIGHT-1; j >= 0; --j)
+                    if(board[colNumber][j] == 0)
+                    {
+                        cout << "Red on " << "\t" << "\t" << colNumber << " " << j << endl;
+                        board[colNumber][j] = RED;
                         break;
+                    }
+                do
+                {
+                    colNumber = ai -> doRandMove();
                 }
-                break;
+                while(board[colNumber][0] != 0);
+
+                for(int j = HEIGHT-1; j >= 0; --j)
+                    if(board[colNumber][j] == 0)
+                    {
+                        cout << "Yellow on " << "\t" << colNumber << " " << j << endl;
+                        board[colNumber][j] = YELLOW;
+                        break;
+                    }
             }
+            else if(mode == 2)
+            {
+                do
+                {
+                    colNumber = ai -> doRandMove();
+                }
+                while(board[colNumber][0] != 0);
+
+                for(int j = HEIGHT-1; j >= 0; --j)
+                    if(board[colNumber][j] == 0)
+                    {
+                        if(whoPlays)
+                        {
+                            cout << "Red on " << "\t" << "\t" << colNumber << " " << j << endl;
+                            board[colNumber][j] = RED;
+                            whoPlays =! whoPlays;
+                            break;
+                        }
+                        else
+                        {
+                            cout << "Yellow on " << "\t" << colNumber << " " << j << endl;
+                            board[colNumber][j] = YELLOW;
+                            whoPlays =! whoPlays;
+                            break;
+                        }
+                    }
+            }
+        }
+        gui->display(board);
+        if(checkWin()) // jesli wygrana
+        {
+            cout << "END OF THE GAME" << endl;
+            while(1)
+            {
+                if(gui->getInput() == -1)
+                    break;
+            }
+            break;
         }
     }
 }
+
 
 bool Game::checkWin()   // tests whether someone has won on the board at the moment
 {
