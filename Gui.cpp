@@ -15,6 +15,9 @@ Gui::Gui()
     buffer = create_bitmap( WIDTH*PUCK, HEIGHT*PUCK ); //rozmiar
     red = load_bmp("red.bmp",default_palette);
     yellow = load_bmp("yellow.bmp",default_palette);
+    mode_1 = load_bmp("manVSmac.bmp",default_palette);
+    mode_2 = load_bmp("macVSman.bmp",default_palette);
+    mode_3 = load_bmp("macVSmac.bmp",default_palette);
     install_mouse(); //mysz
     //select_mouse_cursor(MOUSE_CURSOR_BUSY); //inny kursor myszki
     show_mouse( screen ); //wyswietlanie myszy na ekranie
@@ -43,22 +46,30 @@ int Gui::showStartWindow() //funkcja obslugujaca mysz na ekranie
         scare_mouse();
         clear_to_color( buffer, makecol( 150, 150, 150 ) ); //kolor tla
 
-        textprintf_ex( buffer, font, 100, 350, makecol( 200, 200, 200 ), - 1, "PLAYER VS AI"); //opis slowny typow wiez
-        textprintf_ex( buffer, font, 300, 350, makecol( 200, 200, 200 ), - 1, "AI VS PLAYER");
-        textprintf_ex( buffer, font, 500, 350, makecol( 200, 200, 200 ), - 1, "AI VS AI");
+        textprintf_centre_ex( buffer, font, 350, 80, makecol( 200, 200, 200 ), - 1, "HELLO");
+
+        textprintf_centre_ex( buffer, font, 350, 150, makecol( 200, 200, 200 ), - 1, "CHOOSE GAME MODE");
+
+        textprintf_ex( buffer, font, 105, 350, makecol( 200, 200, 200 ), - 1, "PLAYER VS AI");
+        textprintf_ex( buffer, font, 305, 350, makecol( 200, 200, 200 ), - 1, "AI VS PLAYER");
+        textprintf_ex( buffer, font, 520, 350, makecol( 200, 200, 200 ), - 1, "AI VS AI");
+
+        masked_blit( mode_1, buffer, 0, 0, 100, 240, PUCK, PUCK );
+        masked_blit( mode_2, buffer, 0, 0, 300, 240, PUCK, PUCK );
+        masked_blit( mode_3, buffer, 0, 0, 500, 240, PUCK, PUCK );
 
         blit( buffer, screen, 0, 0, 0, 0, WIDTH*PUCK, HEIGHT*PUCK ); //przeniesienie z buffera na ekran
         unscare_mouse();
         // rest(250);
         mouse();
-        cout << mx << " " << my << endl;
+       // cout << mx << " " << my << endl;
         if(mb==1)
         {
-            if(mx>80 && mx<220 && my>240 &&my<380)
+            if(mx>90 && mx<210 && my>230 &&my<380)
                 return 1;
-            if(mx>270 && mx<430 && my>240 &&my<380)
+            if(mx>290 && mx<410 && my>230 &&my<380)
                 return 2;
-            if(mx>470 && mx<610 && my>240 &&my<380)
+            if(mx>490 && mx<610 && my>230 &&my<380)
                 return 3;
         }
     }

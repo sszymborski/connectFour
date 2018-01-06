@@ -21,7 +21,7 @@ class Game
     AI *ai;
 
 public:
-    Game(int modeArg);
+    Game();
     ~Game();
 
     void start();

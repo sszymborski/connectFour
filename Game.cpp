@@ -2,9 +2,8 @@
 
 #include <iostream>
 
-Game::Game(int modeArg)
+Game::Game()
 {
-    mode = modeArg;
     whoPlays = 1;
 
     gui = new Gui();

@@ -14,6 +14,9 @@ class Gui
     BITMAP * buffer;
     BITMAP * red;
     BITMAP * yellow;
+    BITMAP * mode_1;
+    BITMAP * mode_2;
+    BITMAP * mode_3;
     int mx, my, mb;
 
 public:
