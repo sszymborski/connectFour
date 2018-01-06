@@ -5,10 +5,10 @@
 #include <cstdlib>
 #include <ctime>
 
-#define COUNT4 1000
-#define COUNT3 100
-#define COUNT2 10
-#define COUNT1 1
+#define VALUE4 1000
+#define VALUE3 100
+#define VALUE2 10
+#define VALUE1 1
 
 using namespace std;
 
