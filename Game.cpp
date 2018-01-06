@@ -7,7 +7,7 @@ Game::Game()
     whoPlays = 1;
 
     gui = new Gui();
-    ai = new AI(5);
+    ai = new AI(7);
     board = new int* [WIDTH];
 
     for(int i = 0; i < WIDTH; ++i)
@@ -33,12 +33,14 @@ void Game::start()
     cout << "Tryb to " << mode << endl;
     int colNumber, aiNumber;
     int first = 1; // zmienna ktora odpowiada za mozliwosc ponownego ruchu gracza bez ruchu ai w momencie braku miejsca w kolumnie
+    int freeBlocks = WIDTH*HEIGHT;
 
     if(mode == 2)
     {
         do
         {
-            aiNumber = ai -> doRandMove();
+            aiNumber = ai -> makeMove(board, YELLOW);
+//           aiNumber = ai -> doRandMove();
         }
         while(board[aiNumber][0] != 0);
 
@@ -47,12 +49,13 @@ void Game::start()
             {
                 cout << "Yellow on " << "\t" << aiNumber << " " << j << endl;
                 board[aiNumber][j] = YELLOW;
+                --freeBlocks;
                 break;
             }
 
     }
 
-        if(mode!=-1)
+    if(mode!=-1)
         gui->display(board);
 
 
@@ -76,11 +79,29 @@ void Game::start()
                     {
                         cout << "Red on " << "\t" << "\t" << colNumber << " " << j << endl;
                         board[colNumber][j] = RED;
+                        --freeBlocks;
                         break;
                     }
+                gui -> display(board);
+
+                if(checkWin() || freeBlocks == 0) // jesli wygrana
+                {
+                    if(freeBlocks == 0)
+                        cout << "DRAW" << endl;
+
+                    cout << "END OF THE GAME" << endl;
+                    while(1)
+                    {
+                        if(gui->getInput() == -1)
+                            break;
+                    }
+                    break;
+                }
+
                 do
                 {
-                    colNumber = ai -> doRandMove();
+                    colNumber = ai -> makeMove(board, YELLOW);
+//                    colNumber = ai -> doRandMove();
                 }
                 while(board[colNumber][0] != 0);
 
@@ -89,6 +110,7 @@ void Game::start()
                     {
                         cout << "Yellow on " << "\t" << colNumber << " " << j << endl;
                         board[colNumber][j] = YELLOW;
+                        --freeBlocks;
                         break;
                     }
             }
@@ -96,7 +118,11 @@ void Game::start()
             {
                 do
                 {
-                    colNumber = ai -> doRandMove();
+                    if(whoPlays)
+                        colNumber = ai -> makeMove(board, RED);
+                    else
+                        colNumber = ai -> makeMove(board, YELLOW);
+//                    colNumber = ai -> doRandMove();
                 }
                 while(board[colNumber][0] != 0);
 
@@ -107,21 +133,26 @@ void Game::start()
                         {
                             cout << "Red on " << "\t" << "\t" << colNumber << " " << j << endl;
                             board[colNumber][j] = RED;
-                            whoPlays =! whoPlays;
+                            whoPlays = !whoPlays;
+                            --freeBlocks;
                             break;
                         }
                         else
                         {
                             cout << "Yellow on " << "\t" << colNumber << " " << j << endl;
                             board[colNumber][j] = YELLOW;
-                            whoPlays =! whoPlays;
+                            whoPlays = !whoPlays;
+                            --freeBlocks;
                             break;
                         }
                     }
             }
             gui->display(board);
-            if(checkWin()) // jesli wygrana
+            if(checkWin() || freeBlocks == 0) // jesli wygrana
             {
+                if(freeBlocks == 0)
+                    cout << "DRAW" << endl;
+
                 cout << "END OF THE GAME" << endl;
                 while(1)
                 {
