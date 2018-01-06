@@ -9,6 +9,10 @@
 #define VALUE3 100
 #define VALUE2 10
 #define VALUE1 1
+#define BADVALUE4 -10000
+#define BADVALUE3 -1000
+#define BADVALUE2 -10
+#define BADVALUE1 -1
 
 using namespace std;
 
@@ -26,7 +30,7 @@ public:
 private:
     int evaluate(int** tab, int color);
     bool checkWin(int** board);
-    int aphabeta(int** tab, int color, bool whoPlays, int howDeep, int alpha, int beta);
+    int alphabeta(int** tab, int color, bool whoPlays, int howDeep, int alphaArg, int betaArg);
 };
 
 #endif // AI_H
