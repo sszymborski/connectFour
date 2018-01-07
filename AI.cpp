@@ -28,6 +28,9 @@ int AI::makeMove(int** tab, int color)
 {
     int column, maxValue = -100000;
 
+    cout << "\tkolumna:\t0\t1\t2\t3\t4\t5\t6" << endl;
+    cout << "\tvalue:\t\t";
+
     for(int k = 0; k < WIDTH; ++k)
         if(tab[k][0] == 0)
         {
@@ -50,19 +53,26 @@ int AI::makeMove(int** tab, int color)
                 maxValue = value;
                 column = k;
             }
+            cout << value << "\t";
 
             for(int i = 0; i < WIDTH; ++i)
                 for(int j = 0; j < HEIGHT; ++j)
                     tab[i][j] = tabCopy[i][j];
         }
+        else
+            cout << "--\t";
+    cout << endl;
 
     return column;
 }
 
 int AI::alphabeta(int** tab, int color, bool whoPlays, int howDeep, int alphaArg, int betaArg)
 {
-    if(howDeep == 0 || checkWin(tab))
+    if(howDeep == 0)
         return evaluate(tab, color);
+
+    if(checkWin(tab))
+        return howDeep*evaluate(tab, color);
 
     int myColor = (color == RED ? RED : YELLOW);
     int oppColor = (color == RED ? YELLOW : RED);
@@ -175,153 +185,135 @@ int AI::evaluate(int** tab, int color)
     int value = 0;
 
     for(int i = 0; i < WIDTH; ++i)
-        for(int j = HEIGHT-1; j > 0; --j)
+        for(int j = HEIGHT-1; j >= 0; --j)
         {
             if(tab[i][j] == 0)
                 continue;
 
             int actColor = tab[i][j];
+            int oppColor = (actColor == RED ? YELLOW : RED);
 
-            if(i < WIDTH-3)
+
+            if(i < WIDTH-3) //4right
             {
-                if(j > 2)
-                {
-                    if(tab[i][j-1] == actColor) //vertical
-                    {
-                        if(tab[i][j-2] == actColor)
-                        {
-                            if(tab[i][j-3] == actColor)
-                                value += (actColor == color ? VALUE4 : BADVALUE4); //4s vertical
-                            else if(tab[i][j-3] == 0)
-                                value += (actColor == color ? VALUE3 : BADVALUE3); //3s vertical
-                        }
-                        else if (tab[i][j-2] == 0 && tab[i][j-3] == 0)
-                            value += (actColor == color ? VALUE2 : BADVALUE2); //2s vertical
-                    }
-                    else if(tab[i][j-1] == 0 && tab[i][j-2] == 0 && tab[i][j-3] == 0)
-                        value += (actColor == color ? VALUE1 : BADVALUE1); //1s vertical
+                if(tab[i+1][j] == actColor && tab[i+2][j] == actColor && tab[i+3][j] == actColor)
+                    value += (actColor == color ? VALUE4 : BADVALUE4); //4s right
+                else if(tab[i+1][j] == actColor && tab[i+2][j] == actColor && tab[i+3][j] == 0)
+                    value += (actColor == color ? VALUE3 : BADVALUE3); //3s right
+                else if(tab[i+1][j] == actColor && tab[i+2][j] == 0 && tab[i+3][j] != oppColor)
+                    value += (actColor == color ? VALUE2 : BADVALUE2); //2s right
+                else if(tab[i+1][j] == 0 && tab[i+2][j] != oppColor && tab[i+3][j] != oppColor)
+                    value += (actColor == color ? VALUE1 : BADVALUE1); //1s right
 
-                    if(tab[i+1][j-1] == actColor) //diagonal
-                    {
-                        if(tab[i+2][j-2] == actColor)
-                        {
-                            if(tab[i+3][j-3] == actColor)
-                                value += (actColor == color ? VALUE4 : BADVALUE4); //4s diagonal
-                            else if(tab[i+3][j-3] == 0)
-                            {
-                                if(i > 0 && j < HEIGHT-1)
-                                {
-                                    if(tab[i-1][j+1] == 0)
-                                        value += 2*(actColor == color ? VALUE3 : BADVALUE3); //3s diagonal (double-sided)
-                                }
-                                else
-                                    value += (actColor == color ? VALUE3 : BADVALUE3); //3s diagonal
-                            }
-                        }
-                        else if(tab[i+2][j-2] == 0 && tab[i+3][j-3] == 0)
-                        {
-                            if(i > 0 && j < HEIGHT-1)
-                            {
-                                if(tab[i-1][j+1] == 0)
-                                    value += 2*(actColor == color ? VALUE2 : BADVALUE2); //2s diagonal (double-sided)
-                            }
-                            else
-                                value += (actColor == color ? VALUE2 : BADVALUE2); //2s diagonal
-                        }
-                    }
-                    else if(tab[i+1][j-1] == 0 && tab[i+2][j-2] == 0 && tab[i+3][j-3] == 0)
-                    {
-                        if(i > 0 && j < HEIGHT-1)
-                        {
-                            if(tab[i-1][j+1] == 0)
-                                value += 2*(actColor == color ? VALUE1 : BADVALUE1);  //1s diagonal (double-sided)
-                        }
-                        else
-                            value += (actColor == color ? VALUE1 : BADVALUE1); //1s diagonal
-                    }
+                if(j > 2) //4up-right
+                {
+                    if(tab[i+1][j-1] == actColor && tab[i+2][j-2] == actColor && tab[i+3][j-3] == actColor)
+                        value += (actColor == color ? VALUE4 : BADVALUE4); //4s up-right
+                    else if(tab[i+1][j-1] == actColor && tab[i+2][j-2] == actColor && tab[i+3][j-3] == 0)
+                        value += (actColor == color ? VALUE3 : BADVALUE3); //3s up-right
+                    else if(tab[i+1][j-1] == actColor && tab[i+2][j-2] == 0 && tab[i+3][j-3] != oppColor)
+                        value += (actColor == color ? VALUE2 : BADVALUE2); //2s up-right
+                    else if(tab[i+1][j-1] == 0 && tab[i+2][j-2] != oppColor && tab[i+3][j-3] != oppColor)
+                        value += (actColor == color ? VALUE1 : BADVALUE1); //1s up-right
                 }
 
-                if(tab[i+1][j] == actColor) //horizontal
+                if(j < HEIGHT-3) //up-left 0-0-0-x
                 {
-                    if(tab[i+2][j] == actColor)
-                    {
-                        if(tab[i+3][j] == actColor)
-                            value += (actColor == color ? VALUE4 : BADVALUE4); //4s horizontal
-                        else if(tab[i+3][j] == 0)
-                        {
-                            if(i > 0)
-                            {
-                                if(tab[i-1][j] == 0)
-                                    value += 2*(actColor == color ? VALUE3 : BADVALUE3); //3s horizontal (double-sided)
-                            }
-                            else
-                                value += (actColor == color ? VALUE3 : BADVALUE3); //3s horizontal
-                        }
-                    }
-                    else if(tab[i+2][j] == 0 && tab[i+3][j] == 0)
-                    {
-                        if(i > 0)
-                        {
-                            if(tab[i-1][j] == 0)
-                                value += 2*(actColor == color ? VALUE2 : BADVALUE2); //2s horizontal (double-sided)
-                        }
-                        else
-                            value += (actColor == color ? VALUE2 : BADVALUE2); //2s horizontal
-                    }
-                }
-                else if(tab[i+1][j] == 0 && tab[i+2][j] == 0 && tab[i+3][j] == 0)
-                {
-                    if(i > 0)
-                    {
-                        if(tab[i-1][j] == 0)
-                            value += 2*(actColor == color ? VALUE1 : BADVALUE1); //1s horizontal (double-sided)
-                    }
-                    else
-                        value += (actColor == color ? VALUE1 : BADVALUE1); //1s horizontal
+                    if(tab[i+3][j+3] != oppColor && tab[i+2][j+2] != oppColor && tab[i+1][j+1] == 0)
+                        value += (actColor == color ? VALUE1 : BADVALUE1); //0-0-0-x
                 }
             }
 
-            if(i > 2 && j > 2)
+            if(i < WIDTH-2 && i > 0) //horizontal 0-x-?-?
             {
-                if(tab[i-1][j-1] == actColor) //reverse diagonal (up-left)
+                if(tab[i-1][j] == 0 && tab[i+1][j] == actColor && tab[i+2][j] == actColor)
+                    value += (actColor == color ? VALUE3 : BADVALUE3); //0-x-1-1
+                else if(tab[i-1][j] == 0 && tab[i+1][j] == actColor && tab[i+2][j] == 0)
+                    value += (actColor == color ? VALUE2 : BADVALUE2); //0-x-1-0
+                else if(tab[i-1][j] == 0 && tab[i+1][j] == 0 && tab[i+2][j] != oppColor)
+                    value += (actColor == color ? VALUE1 : BADVALUE1); //0-x-0-0
+
+                if(j > 1 && j < HEIGHT-1) //up-right 0-x-?-?
                 {
-                    if(tab[i-2][j-2] == actColor)
-                    {
-                        if(tab[i-3][j-3] == actColor)
-                            value += (actColor == color ? VALUE4 : BADVALUE4); //4s reverse diagonal
-                        else if(tab[i-3][j-3] == 0)
-                        {
-                            if(i < WIDTH-1 && j < HEIGHT-1)
-                            {
-                                if(tab[i+1][j+1] == 0)
-                                    value += 2*(actColor == color ? VALUE3 : BADVALUE3); //3s reverse diagonal (double-sided)
-                            }
-                            else
-                                value += (actColor == color ? VALUE3 : BADVALUE3); //3s reverse diagonal
-                        }
-                    }
-                    else if(tab[i-2][j-2] == 0 && tab[i-3][j-3] == 0)
-                    {
-                        if(i < WIDTH-1 && j < HEIGHT-1)
-                        {
-                            if(tab[i+1][j+1] == 0)
-                                value += 2*(actColor == color ? VALUE2 : BADVALUE2); //2s reverse diagonal (double-sided)
-                        }
-                        else
-                            value += (actColor == color ? VALUE2 : BADVALUE2); //2s reverse diagonal
-                    }
+                    if(tab[i-1][j+1] == 0 && tab[i+1][j-1] == actColor && tab[i+2][j-2] == actColor)
+                        value += (actColor == color ? VALUE3 : BADVALUE3); //0-x-1-1
+                    else if(tab[i-1][j+1] == 0 && tab[i+1][j-1] == actColor && tab[i+2][j-2] == 0)
+                        value += (actColor == color ? VALUE2 : BADVALUE2); //0-x-1-0
+                    else if(tab[i-1][j+1] == 0 && tab[i+1][j-1] == 0 && tab[i+2][j-2] != oppColor)
+                        value += (actColor == color ? VALUE1 : BADVALUE1); //0-x-0-0
                 }
-                else if(tab[i-1][j-1] == 0 && tab[i-2][j-2] == 0 && tab[i-3][j-3] == 0)
+
+                if(j > 0 && j < HEIGHT-2) //up-left 0-0-x-?
                 {
-                    if(i < WIDTH-1 && j < HEIGHT-1)
-                    {
-                        if(tab[i+1][j+1] == 0)
-                            value += 2*(actColor == color ? VALUE1 : BADVALUE1);  //1s reverse diagonal (double-sided)
-                    }
-                    else
-                        value += (actColor == color ? VALUE1 : BADVALUE1); //1s reverse diagonal
+                    if(tab[i+2][j+2] != oppColor && tab[i+1][j+1] == 0 && tab[i-1][j-1] == actColor)
+                        value += (actColor == color ? VALUE2 : BADVALUE2); //0-0-x-1
+                    else if(tab[i+2][j+2] != oppColor && tab[i+1][j+1] == 0 && tab[i-1][j-1] == 0)
+                        value += (actColor == color ? VALUE1 : BADVALUE1); //0-0-x-0
                 }
             }
+
+            if(i < WIDTH-1 && i > 1) //horizontal 0-0-x-?
+            {
+                if(tab[i-2][j] != oppColor && tab[i-1][j] == 0 && tab[i+1][j] == actColor)
+                    value += (actColor == color ? VALUE2 : BADVALUE2); //0-0-x-1
+                else if(tab[i-2][j] != oppColor && tab[i-1][j] == 0 && tab[i+1][j] == 0)
+                    value += (actColor == color ? VALUE1 : BADVALUE1); //0-0-x-0
+
+                if(j > 0 && j < HEIGHT-2) //up-right 0-0-x-?
+                {
+                    if(tab[i-2][j+2] != oppColor && tab[i-1][j+1] == 0 && tab[i+1][j-1] == actColor)
+                        value += (actColor == color ? VALUE2 : BADVALUE2); //0-0-x-1
+                    else if(tab[i-2][j+2] != oppColor && tab[i-1][j+1] == 0 && tab[i+1][j-1] == 0)
+                        value += (actColor == color ? VALUE1 : BADVALUE1); //0-0-x-0
+                }
+
+                if(j > 1 && j < HEIGHT-1) //up-left 0-x-?-?
+                {
+                    if(tab[i+1][j+1] == 0 && tab[i-1][j-1] == actColor && tab[i-2][j-2] == actColor)
+                        value += (actColor == color ? VALUE3 : BADVALUE3); //0-x-1-1
+                    else if(tab[i+1][j+1] == 0 && tab[i-1][j-1] == actColor && tab[i-2][j-2] == 0)
+                        value += (actColor == color ? VALUE2 : BADVALUE2); //0-x-1-0
+                    else if(tab[i+1][j+1] == 0 && tab[i-1][j-1] == 0 && tab[i-2][j-2] != oppColor)
+                        value += (actColor == color ? VALUE1 : BADVALUE1); //0-x-0-0
+                }
+            }
+
+            if(i > 2) //horizontal 0-0-0-x
+            {
+                if(tab[i-3][j] != oppColor && tab[i-2][j] != oppColor && tab[i-1][j] == 0)
+                    value += (actColor == color ? VALUE1 : BADVALUE1); //0-0-0-x
+
+                if(j < HEIGHT-3) //up-right 0-0-0-x
+                {
+                    if(tab[i-3][j+3] != oppColor && tab[i-2][j+2] != oppColor && tab[i-1][j+1] == 0)
+                        value += (actColor == color ? VALUE1 : BADVALUE1);
+                }
+
+                if(j > 2) //up-left x-?-?-?
+                {
+                    if(tab[i-1][j-1] == actColor && tab[i-2][j-2] == actColor && tab[i-3][j-3] == actColor)
+                        value += (actColor == color ? VALUE4 : BADVALUE4); //x-1-1-1
+                    else if(tab[i-1][j-1] == actColor && tab[i-2][j-2] == actColor && tab[i-3][j-3] == 0)
+                        value += (actColor == color ? VALUE3 : BADVALUE3); //x-1-1-0
+                    else if(tab[i-1][j-1] == actColor && tab[i-2][j-2] == 0 && tab[i-3][j-3] != oppColor)
+                        value += (actColor == color ? VALUE2 : BADVALUE2); //x-1-0-0
+                    else if(tab[i-1][j-1] == 0 && tab[i-2][j-2] != oppColor && tab[i-3][j-3] != oppColor)
+                        value += (actColor == color ? VALUE1 : BADVALUE1); //x-0-0-0
+                }
+            }
+
+            if(j > 2)
+            {
+                if(tab[i][j-1] == 0)
+                    value += (actColor == color ? VALUE1 : BADVALUE1); //1s up
+                else if(tab[i][j-1] == actColor && tab[i][j-2] == 0)
+                    value += (actColor == color ? VALUE2 : BADVALUE2); //2s up
+                else if(tab[i][j-1] == actColor && tab[i][j-2] == actColor && tab[i][j-3] == 0)
+                    value += (actColor == color ? VALUE3 : BADVALUE3); //3s up
+                else if(tab[i][j-1] == actColor && tab[i][j-2] == actColor && tab[i][j-3] == actColor)
+                    value += (actColor == color ? VALUE4 : BADVALUE4); //4s up
+            }
+
         }//for
 
     return value;

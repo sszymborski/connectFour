@@ -13,7 +13,7 @@ using namespace std;
 
 class Game
 {
-    int mode; //rozroznia tryb gracz vs AI oraz AI vs AI
+    int mode; //rozroznia tryb PvsAI (1), AIvsP (2), AIvsAI (3)
     int **board;
     bool whoPlays;
 

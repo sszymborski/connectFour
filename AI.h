@@ -9,7 +9,7 @@
 #define VALUE3 100
 #define VALUE2 10
 #define VALUE1 1
-#define BADVALUE4 -10000
+#define BADVALUE4 -9999
 #define BADVALUE3 -1000
 #define BADVALUE2 -10
 #define BADVALUE1 -1
