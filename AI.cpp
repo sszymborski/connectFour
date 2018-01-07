@@ -68,8 +68,11 @@ int AI::makeMove(int** tab, int color)
 
 int AI::alphabeta(int** tab, int color, bool whoPlays, int howDeep, int alphaArg, int betaArg)
 {
-    if(howDeep == 0 || checkWin(tab))
+    if(howDeep == 0)
         return evaluate(tab, color);
+
+    if(checkWin(tab))
+        return howDeep*evaluate(tab, color);
 
     int myColor = (color == RED ? RED : YELLOW);
     int oppColor = (color == RED ? YELLOW : RED);
