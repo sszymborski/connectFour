@@ -41,29 +41,30 @@ void Gui::mouse()
 
 int Gui::showStartWindow() //funkcja obslugujaca mysz na ekranie
 {
+    scare_mouse();
+    clear_to_color( buffer, makecol( 150, 150, 150 ) ); //kolor tla
+
+    textprintf_centre_ex( buffer, font, 350, 80, makecol( 200, 200, 200 ), - 1, "HELLO");
+
+    textprintf_centre_ex( buffer, font, 350, 150, makecol( 200, 200, 200 ), - 1, "CHOOSE GAME MODE");
+
+    textprintf_ex( buffer, font, 105, 350, makecol( 200, 200, 200 ), - 1, "PLAYER VS AI");
+    textprintf_ex( buffer, font, 305, 350, makecol( 200, 200, 200 ), - 1, "AI VS PLAYER");
+    textprintf_ex( buffer, font, 520, 350, makecol( 200, 200, 200 ), - 1, "AI VS AI");
+
+    masked_blit( mode_1, buffer, 0, 0, 100, 240, PUCK, PUCK );
+    masked_blit( mode_2, buffer, 0, 0, 300, 240, PUCK, PUCK );
+    masked_blit( mode_3, buffer, 0, 0, 500, 240, PUCK, PUCK );
+
+    blit( buffer, screen, 0, 0, 0, 0, WIDTH*PUCK, HEIGHT*PUCK ); //przeniesienie z buffera na ekran
+    unscare_mouse();
+    // rest(250);
     while(!key[ KEY_ESC ])
     {
-        scare_mouse();
-        clear_to_color( buffer, makecol( 150, 150, 150 ) ); //kolor tla
-
-        textprintf_centre_ex( buffer, font, 350, 80, makecol( 200, 200, 200 ), - 1, "HELLO");
-
-        textprintf_centre_ex( buffer, font, 350, 150, makecol( 200, 200, 200 ), - 1, "CHOOSE GAME MODE");
-
-        textprintf_ex( buffer, font, 105, 350, makecol( 200, 200, 200 ), - 1, "PLAYER VS AI");
-        textprintf_ex( buffer, font, 305, 350, makecol( 200, 200, 200 ), - 1, "AI VS PLAYER");
-        textprintf_ex( buffer, font, 520, 350, makecol( 200, 200, 200 ), - 1, "AI VS AI");
-
-        masked_blit( mode_1, buffer, 0, 0, 100, 240, PUCK, PUCK );
-        masked_blit( mode_2, buffer, 0, 0, 300, 240, PUCK, PUCK );
-        masked_blit( mode_3, buffer, 0, 0, 500, 240, PUCK, PUCK );
-
-        blit( buffer, screen, 0, 0, 0, 0, WIDTH*PUCK, HEIGHT*PUCK ); //przeniesienie z buffera na ekran
-        unscare_mouse();
-        // rest(250);
         mouse();
-       // cout << mx << " " << my << endl;
-        if(mb==1)
+        // cout << mx << " " << my << endl;
+
+        if(mb == 1)
         {
             if(mx>90 && mx<210 && my>230 &&my<380)
                 return 1;
@@ -114,6 +115,6 @@ void Gui::display(int **tab)
                 masked_blit( yellow, buffer, 0, 0, i*PUCK, j*PUCK, PUCK, PUCK );
 
     blit( buffer, screen, 0, 0, 0, 0, WIDTH*PUCK, HEIGHT*PUCK ); //przeniesienie z buffera na ekran
-    unscare_mouse();
     rest(250);
+    unscare_mouse();
 }

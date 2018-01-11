@@ -3,6 +3,7 @@
 
 #include "Gui.h"
 #include "AI.h"
+#include <fstream>
 
 #define WIDTH 7
 #define HEIGHT 6

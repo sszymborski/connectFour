@@ -16,6 +16,7 @@ Game::Game()
     for(int i = 0; i < WIDTH; ++i)
         for(int j = 0; j < HEIGHT; ++j)
             board[i][j] = 0;
+
 }
 
 Game::~Game()
@@ -31,6 +32,13 @@ void Game::start()
 {
     mode = gui->showStartWindow();
     cout << "Tryb to " << mode << endl;
+    fstream plik("log.txt", ios::out | ios::app);
+    if(plik.good())
+    {
+        plik.seekp(0, ios_base::end);
+        plik << "Tryb to " << mode << endl;
+        plik.close();
+    }
     int colNumber, aiNumber;
     int first = 1; // zmienna ktora odpowiada za mozliwosc ponownego ruchu gracza bez ruchu ai w momencie braku miejsca w kolumnie
     int freeBlocks = WIDTH*HEIGHT;
@@ -40,7 +48,6 @@ void Game::start()
         do
         {
             aiNumber = ai -> makeMove(board, YELLOW);
-//           aiNumber = ai -> doRandMove();
         }
         while(board[aiNumber][0] != 0);
 
@@ -48,6 +55,13 @@ void Game::start()
             if(board[aiNumber][j] == 0)
             {
                 cout << "Yellow on " << "\t" << aiNumber << " " << j << endl;
+                fstream plik("log.txt", ios::out | ios::app);
+                if(plik.good())
+                {
+                    plik.seekp(0, ios_base::end);
+                    plik << "Yellow on " << "\t" << aiNumber << " " << j << endl;
+                    plik.close();
+                }
                 board[aiNumber][j] = YELLOW;
                 --freeBlocks;
                 break;
@@ -68,6 +82,13 @@ void Game::start()
             if(colNumber == -1) // jesli esc
             {
                 cout << "END OF THE GAME" << endl;
+                fstream plik("log.txt", ios::out | ios::app);
+                if(plik.good())
+                {
+                    plik.seekp(0, ios_base::end);
+                    plik << "END OF THE GAME\n" << endl;
+                    plik.close();
+                }
                 break;
             }
             if(mode == 1 || mode == 2)       // gracz vs ai lub ai vs gracz(wtedy ruch byl wczesniej juz)
@@ -78,6 +99,13 @@ void Game::start()
                     if(board[colNumber][j] == 0)
                     {
                         cout << "Red on " << "\t" << "\t" << colNumber << " " << j << endl;
+                        fstream plik("log.txt", ios::out | ios::app);
+                        if(plik.good())
+                        {
+                            plik.seekp(0, ios_base::end);
+                            plik << "Red on " << "\t" << "\t" << colNumber << " " << j << endl;
+                            plik.close();
+                        }
                         board[colNumber][j] = RED;
                         --freeBlocks;
                         break;
@@ -87,9 +115,26 @@ void Game::start()
                 if(checkWin() || freeBlocks == 0) // jesli wygrana
                 {
                     if(freeBlocks == 0)
+                    {
                         cout << "DRAW" << endl;
+                        fstream plik("log.txt", ios::out | ios::app);
+                        if(plik.good())
+                        {
+                            plik.seekp(0, ios_base::end);
+                            plik << "DRAW\n" << endl;
+                            plik.close();
+                        }
+                    }
 
                     cout << "END OF THE GAME" << endl;
+                    fstream plik("log.txt", ios::out | ios::app);
+                    if(plik.good())
+                    {
+                        plik.seekp(0, ios_base::end);
+                        plik << "END OF THE GAME\n" << endl;
+                        plik.close();
+                    }
+
                     while(1)
                     {
                         if(gui->getInput() == -1)
@@ -101,7 +146,6 @@ void Game::start()
                 do
                 {
                     colNumber = ai -> makeMove(board, YELLOW);
-//                    colNumber = ai -> doRandMove();
                 }
                 while(board[colNumber][0] != 0);
 
@@ -109,6 +153,14 @@ void Game::start()
                     if(board[colNumber][j] == 0)
                     {
                         cout << "Yellow on " << "\t" << colNumber << " " << j << endl;
+                        fstream plik("log.txt", ios::out | ios::app);
+                        if(plik.good())
+                        {
+                            plik.seekp(0, ios_base::end);
+                            plik << "Yellow on " << "\t" << colNumber << " " << j << endl;
+                            plik.close();
+                        }
+
                         board[colNumber][j] = YELLOW;
                         --freeBlocks;
                         break;
@@ -122,7 +174,6 @@ void Game::start()
                         colNumber = ai -> makeMove(board, RED);
                     else
                         colNumber = ai -> makeMove(board, YELLOW);
-//                    colNumber = ai -> doRandMove();
                 }
                 while(board[colNumber][0] != 0);
 
@@ -132,6 +183,13 @@ void Game::start()
                         if(whoPlays)
                         {
                             cout << "Red on " << "\t" << "\t" << colNumber << " " << j << endl;
+                            fstream plik("log.txt", ios::out | ios::app);
+                            if(plik.good())
+                            {
+                                plik.seekp(0, ios_base::end);
+                                plik << "Red on " << "\t" << "\t" << colNumber << " " << j << endl;
+                                plik.close();
+                            }
                             board[colNumber][j] = RED;
                             whoPlays = !whoPlays;
                             --freeBlocks;
@@ -140,6 +198,13 @@ void Game::start()
                         else
                         {
                             cout << "Yellow on " << "\t" << colNumber << " " << j << endl;
+                            fstream plik("log.txt", ios::out | ios::app);
+                            if(plik.good())
+                            {
+                                plik.seekp(0, ios_base::end);
+                                plik << "Yellow on " << "\t" << colNumber << " " << j << endl;
+                                plik.close();
+                            }
                             board[colNumber][j] = YELLOW;
                             whoPlays = !whoPlays;
                             --freeBlocks;
@@ -151,9 +216,25 @@ void Game::start()
             if(checkWin() || freeBlocks == 0) // jesli wygrana
             {
                 if(freeBlocks == 0)
+                {
                     cout << "DRAW" << endl;
+                    fstream plik("log.txt", ios::out | ios::app);
+                    if(plik.good())
+                    {
+                        plik.seekp(0, ios_base::end);
+                        plik << "DRAW\n" << endl;
+                        plik.close();
+                    }
+                }
 
                 cout << "END OF THE GAME" << endl;
+                fstream plik("log.txt", ios::out | ios::app);
+                if(plik.good())
+                {
+                    plik.seekp(0, ios_base::end);
+                    plik << "END OF THE GAME\n" << endl;
+                    plik.close();
+                }
                 while(1)
                 {
                     if(gui->getInput() == -1)
@@ -182,6 +263,18 @@ bool Game::checkWin()   // tests whether someone has won on the board at the mom
                          << i << "x" << j-2 <<", "
                          << i << "x" << j-3 << "."
                          << endl;
+                    fstream plik("log.txt", ios::out | ios::app);
+                    if(plik.good())
+                    {
+                        plik.seekp(0, ios_base::end);
+                        plik << "Win by "
+                             << i << "x" << j << ", "
+                             << i << "x" << j-1 <<", "
+                             << i << "x" << j-2 <<", "
+                             << i << "x" << j-3 << "."
+                             << endl;
+                        plik.close();
+                    }
                     return true;
                 }
             }
@@ -198,6 +291,18 @@ bool Game::checkWin()   // tests whether someone has won on the board at the mom
                          << i+2 << "x" << j <<", "
                          << i+3 << "x" << j << "."
                          << endl;
+                    fstream plik("log.txt", ios::out | ios::app);
+                    if(plik.good())
+                    {
+                        plik.seekp(0, ios_base::end);
+                        plik << "Win by "
+                             << i << "x" << j << ", "
+                             << i+1 << "x" << j <<", "
+                             << i+2 << "x" << j <<", "
+                             << i+3 << "x" << j << "."
+                             << endl;
+                        plik.close();
+                    }
                     return true;
                 }
             }
@@ -214,6 +319,18 @@ bool Game::checkWin()   // tests whether someone has won on the board at the mom
                          << i+2 << "x" << j-2 <<", "
                          << i+3 << "x" << j-3 << "."
                          << endl;
+                    fstream plik("log.txt", ios::out | ios::app);
+                    if(plik.good())
+                    {
+                        plik.seekp(0, ios_base::end);
+                        plik << "Win by "
+                             << i << "x" << j << ", "
+                             << i+1 << "x" << j-1 <<", "
+                             << i+2 << "x" << j-2 <<", "
+                             << i+3 << "x" << j-3 << "."
+                             << endl;
+                        plik.close();
+                    }
                     return true;
                 }
             }
@@ -230,6 +347,18 @@ bool Game::checkWin()   // tests whether someone has won on the board at the mom
                          << i+2 << "x" << j+2 <<", "
                          << i+3 << "x" << j+3 << "."
                          << endl;
+                    fstream plik("log.txt", ios::out | ios::app);
+                    if(plik.good())
+                    {
+                        plik.seekp(0, ios_base::end);
+                        plik << "Win by "
+                             << i << "x" << j << ", "
+                             << i+1 << "x" << j+1 <<", "
+                             << i+2 << "x" << j+2 <<", "
+                             << i+3 << "x" << j+3 << "."
+                             << endl;
+                        plik.close();
+                    }
                     return true;
                 }
             }

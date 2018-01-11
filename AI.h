@@ -4,6 +4,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
+#include <fstream>
 
 #define VALUE4 1000
 #define VALUE3 100
@@ -24,13 +25,13 @@ public:
     AI(int depthArg);
     ~AI();
 
-    int doRandMove();
     int makeMove(int** tab, int color);
 
 private:
     long long int evaluate(int** tab, int color);
     long long int alphabeta(int** tab, int color, bool whoPlays, int howDeep, int alphaArg, int betaArg);
     int checkWin(int** board);
+    bool isFreeSpace(int** tab);
 };
 
 #endif // AI_H

@@ -4,6 +4,20 @@
 AI::AI(int depthArg)
 {
     cout << "hej, tu AI" << endl;
+    fstream plik("log.txt", ios::out | ios::app);
+    if(plik.good())
+    {
+        time_t t = time(0);
+        struct tm * now = localtime(&t);
+
+        plik.seekp(0, ios_base::end);
+        plik << "--------------------------------";
+        plik << (now->tm_year + 1900) << "-" << (now->tm_mon + 1) << "-" << now->tm_mday << " ";
+        plik << now->tm_hour << ":" << now->tm_min << ":" << now->tm_sec;
+        plik << "--------------------------------" << endl;
+        plik << "hej, tu AI" << endl;
+        plik.close();
+    }
     srand( time( NULL ) );
     depth = depthArg;
 }
@@ -13,24 +27,22 @@ AI::~AI()
     //dtor
 }
 
-int AI::doRandMove()
-{
-    int number = rand();
-    cout << "Wylosowano: " << number << endl;
-
-    int goodNumber = number%7;
-    cout << "Pionek na: " << goodNumber << endl;
-
-    return goodNumber;
-}
-
 int AI::makeMove(int** tab, int color)
 {
     int column;
-    long long int maxValue = -100000;
+    long long int maxValue = -1000000;
 
     cout << "\tkolumna:\t0\t1\t2\t3\t4\t5\t6" << endl;
     cout << "\tvalue:\t\t";
+
+    fstream plik("log.txt", ios::out | ios::app);
+    if(plik.good())
+    {
+        plik.seekp(0, ios_base::end);
+        plik << "\tkolumna:\t0\t1\t2\t3\t4\t5\t6" << endl;
+        plik << "\tvalue:\t\t";
+        plik.close();
+    }
 
     for(int k = 0; k < WIDTH; ++k)
         if(tab[k][0] == 0)
@@ -55,21 +67,44 @@ int AI::makeMove(int** tab, int color)
                 column = k;
             }
             cout << value << "\t";
+            fstream plik("log.txt", ios::out | ios::app);
+            if(plik.good())
+            {
+                plik.seekp(0, ios_base::end);
+                plik << value << "\t";
+                plik.close();
+            }
 
             for(int i = 0; i < WIDTH; ++i)
                 for(int j = 0; j < HEIGHT; ++j)
                     tab[i][j] = tabCopy[i][j];
         }
         else
+        {
             cout << "--\t";
+            fstream plik("log.txt", ios::out | ios::app);
+            if(plik.good())
+            {
+                plik.seekp(0, ios_base::end);
+                plik << "--\t";
+                plik.close();
+            }
+        }
     cout << endl;
+    plik.open("log.txt", ios::out | ios::app);
+    if(plik.good())
+    {
+        plik.seekp(0, ios_base::end);
+        plik << endl;
+        plik.close();
+    }
 
     return column;
 }
 
 long long int AI::alphabeta(int** tab, int color, bool whoPlays, int howDeep, int alphaArg, int betaArg)
 {
-    if(howDeep == 0)
+    if(howDeep == 0 || !isFreeSpace(tab))
         return evaluate(tab, color);
 
     int myColor = (color == RED ? RED : YELLOW);
@@ -356,4 +391,13 @@ int AI::checkWin(int** board)
                 }
             }
     return 0;
+}
+
+bool AI::isFreeSpace(int** tab)
+{
+    for(int i = 0; i < WIDTH; ++i)
+        if(tab[i][0] == 0)
+            return true;
+
+    return false;
 }
