@@ -105,7 +105,7 @@ long long int AI::alphabeta(int** tab, int color, bool whoPlays, int howDeep, in
                         break;
                     }
 
-                int betaResult = alphabeta(tab, myColor, whoPlays, howDeep-1, alpha, beta);
+                int betaResult = alphabeta(tab, myColor, true, howDeep-1, alpha, beta);
                 beta = (beta < betaResult ? beta : betaResult);
 
                 if(alpha >= beta) //odcinanie galezi
@@ -141,7 +141,7 @@ long long int AI::alphabeta(int** tab, int color, bool whoPlays, int howDeep, in
                         break;
                     }
 
-                int alphaResult = alphabeta(tab, myColor, !whoPlays, howDeep-1, alpha, beta);
+                int alphaResult = alphabeta(tab, myColor, false, howDeep-1, alpha, beta);
                 alpha = (alpha > alphaResult ? alpha : alphaResult);
 
                 if(alpha >= beta) //odcinanie galezi
@@ -175,33 +175,33 @@ long long int AI::evaluate(int** tab, int color)
             int oppColor = (actColor == RED ? YELLOW : RED);
 
 
-            if(i < WIDTH-3) //4right
+            if(i < WIDTH-3) //horizontal x-?-?-?
             {
                 if(tab[i+1][j] == actColor && tab[i+2][j] == actColor && tab[i+3][j] == actColor)
-                    value += (actColor == color ? VALUE4 : BADVALUE4); //4s right
+                    value += (actColor == color ? VALUE4 : BADVALUE4); //x-1-1-1
                 else if(tab[i+1][j] == actColor && tab[i+2][j] == actColor && tab[i+3][j] == 0)
-                    value += (actColor == color ? VALUE3 : BADVALUE3); //3s right
+                    value += (actColor == color ? VALUE3 : BADVALUE3); //x-1-1-0
                 else if(tab[i+1][j] == actColor && tab[i+2][j] == 0 && tab[i+3][j] != oppColor)
-                    value += (actColor == color ? VALUE2 : BADVALUE2); //2s right
+                    value += (actColor == color ? VALUE2 : BADVALUE2); //x-1-0-0
                 else if(tab[i+1][j] == 0 && tab[i+2][j] != oppColor && tab[i+3][j] != oppColor)
-                    value += (actColor == color ? VALUE1 : BADVALUE1); //1s right
+                    value += (actColor == color ? VALUE1 : BADVALUE1); //x-0-0-0
 
-                if(j > 2) //4up-right
+                if(j > 2) //up-right x-?-?-?
                 {
                     if(tab[i+1][j-1] == actColor && tab[i+2][j-2] == actColor && tab[i+3][j-3] == actColor)
-                        value += (actColor == color ? VALUE4 : BADVALUE4); //4s up-right
+                        value += (actColor == color ? VALUE4 : BADVALUE4); //x-1-1-1
                     else if(tab[i+1][j-1] == actColor && tab[i+2][j-2] == actColor && tab[i+3][j-3] == 0)
-                        value += (actColor == color ? VALUE3 : BADVALUE3); //3s up-right
+                        value += (actColor == color ? VALUE3 : BADVALUE3); //x-1-1-0
                     else if(tab[i+1][j-1] == actColor && tab[i+2][j-2] == 0 && tab[i+3][j-3] != oppColor)
-                        value += (actColor == color ? VALUE2 : BADVALUE2); //2s up-right
+                        value += (actColor == color ? VALUE2 : BADVALUE2); //x-1-0-0
                     else if(tab[i+1][j-1] == 0 && tab[i+2][j-2] != oppColor && tab[i+3][j-3] != oppColor)
-                        value += (actColor == color ? VALUE1 : BADVALUE1); //1s up-right
+                        value += (actColor == color ? VALUE1 : BADVALUE1); //x-0-0-0
                 }
 
-                if(j < HEIGHT-3) //up-left 0-0-0-x
+                if(j < HEIGHT-3) //down-right x-0-0-0
                 {
                     if(tab[i+3][j+3] != oppColor && tab[i+2][j+2] != oppColor && tab[i+1][j+1] == 0)
-                        value += (actColor == color ? VALUE1 : BADVALUE1); //0-0-0-x
+                        value += (actColor == color ? VALUE1 : BADVALUE1); //x-0-0-0
                 }
             }
 
@@ -224,12 +224,12 @@ long long int AI::evaluate(int** tab, int color)
                         value += (actColor == color ? VALUE1 : BADVALUE1); //0-x-0-0
                 }
 
-                if(j > 0 && j < HEIGHT-2) //up-left 0-0-x-?
+                if(j > 0 && j < HEIGHT-2) //down-right ?-x-0-0
                 {
                     if(tab[i+2][j+2] != oppColor && tab[i+1][j+1] == 0 && tab[i-1][j-1] == actColor)
-                        value += (actColor == color ? VALUE2 : BADVALUE2); //0-0-x-1
+                        value += (actColor == color ? VALUE2 : BADVALUE2); //1-x-0-0
                     else if(tab[i+2][j+2] != oppColor && tab[i+1][j+1] == 0 && tab[i-1][j-1] == 0)
-                        value += (actColor == color ? VALUE1 : BADVALUE1); //0-0-x-0
+                        value += (actColor == color ? VALUE1 : BADVALUE1); //0-x-0-0
                 }
             }
 
@@ -248,7 +248,7 @@ long long int AI::evaluate(int** tab, int color)
                         value += (actColor == color ? VALUE1 : BADVALUE1); //0-0-x-0
                 }
 
-                if(j > 1 && j < HEIGHT-1) //up-left 0-x-?-?
+                if(j > 1 && j < HEIGHT-1) //down-right ?-?-x-0
                 {
                     if(tab[i+1][j+1] == 0 && tab[i-1][j-1] == actColor && tab[i-2][j-2] == actColor)
                         value += (actColor == color ? VALUE3 : BADVALUE3); //0-x-1-1
@@ -270,7 +270,7 @@ long long int AI::evaluate(int** tab, int color)
                         value += (actColor == color ? VALUE1 : BADVALUE1);
                 }
 
-                if(j > 2) //up-left x-?-?-?
+                if(j > 2) //down-right ?-?-?-x
                 {
                     if(tab[i-1][j-1] == actColor && tab[i-2][j-2] == actColor && tab[i-3][j-3] == actColor)
                         value += (actColor == color ? VALUE4 : BADVALUE4); //x-1-1-1
@@ -283,7 +283,7 @@ long long int AI::evaluate(int** tab, int color)
                 }
             }
 
-            if(j > 2)
+            if(j > 2) //vertical
             {
                 if(tab[i][j-1] == 0)
                     value += (actColor == color ? VALUE1 : BADVALUE1); //1s up
@@ -304,7 +304,7 @@ int AI::checkWin(int** board)
 {
     int actual;
     for(int i = 0; i < WIDTH; ++i)   // tests 4 fields vertically to up
-        for(int j = HEIGHT-1; j > HEIGHT-4; --j)
+        for(int j = HEIGHT-1; j > 2; --j)
             if(board[i][j] != 0)
             {
                 actual = board[i][j];
@@ -330,7 +330,7 @@ int AI::checkWin(int** board)
                 }
             }
     for(int i = 0; i < WIDTH-3; ++i)   // tests 4 fields across to up and right
-        for(int j = HEIGHT-1; j >  HEIGHT-4; --j)
+        for(int j = HEIGHT-1; j > 2; --j)
             if(board[i][j] != 0)
             {
                 actual = board[i][j];
