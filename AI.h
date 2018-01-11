@@ -9,7 +9,7 @@
 #define VALUE3 100
 #define VALUE2 10
 #define VALUE1 1
-#define BADVALUE4 -9999
+#define BADVALUE4 -10000
 #define BADVALUE3 -1000
 #define BADVALUE2 -10
 #define BADVALUE1 -1
@@ -28,9 +28,9 @@ public:
     int makeMove(int** tab, int color);
 
 private:
-    int evaluate(int** tab, int color);
-    bool checkWin(int** board);
-    int alphabeta(int** tab, int color, bool whoPlays, int howDeep, int alphaArg, int betaArg);
+    long long int evaluate(int** tab, int color);
+    long long int alphabeta(int** tab, int color, bool whoPlays, int howDeep, int alphaArg, int betaArg);
+    int checkWin(int** board);
 };
 
 #endif // AI_H

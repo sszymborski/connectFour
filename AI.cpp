@@ -26,7 +26,8 @@ int AI::doRandMove()
 
 int AI::makeMove(int** tab, int color)
 {
-    int column, maxValue = -100000;
+    int column;
+    long long int maxValue = -100000;
 
     cout << "\tkolumna:\t0\t1\t2\t3\t4\t5\t6" << endl;
     cout << "\tvalue:\t\t";
@@ -47,7 +48,7 @@ int AI::makeMove(int** tab, int color)
                     break;
                 }
 
-            int value = alphabeta(tab, color, false, depth-1, -100000, 100000);
+            long long int value = alphabeta(tab, color, false, depth-1, -1000000, 1000000);
             if(value > maxValue)
             {
                 maxValue = value;
@@ -66,16 +67,24 @@ int AI::makeMove(int** tab, int color)
     return column;
 }
 
-int AI::alphabeta(int** tab, int color, bool whoPlays, int howDeep, int alphaArg, int betaArg)
+long long int AI::alphabeta(int** tab, int color, bool whoPlays, int howDeep, int alphaArg, int betaArg)
 {
     if(howDeep == 0)
         return evaluate(tab, color);
 
-    if(checkWin(tab))
-        return howDeep*evaluate(tab, color);
-
     int myColor = (color == RED ? RED : YELLOW);
     int oppColor = (color == RED ? YELLOW : RED);
+
+    int winColor = checkWin(tab);
+    if(winColor == oppColor && howDeep >= depth-3)
+        return evaluate(tab, color) + 10*(BADVALUE4);
+    else if(winColor == oppColor)
+        return evaluate(tab, color) + howDeep*(BADVALUE4);
+    else if(winColor == color && howDeep >= depth-3)
+        return evaluate(tab, color) + 100*howDeep*VALUE4;
+    else if(winColor == color)
+        return evaluate(tab, color) + howDeep*VALUE4;
+
     int alpha = alphaArg, beta = betaArg;
     int tabCopy[WIDTH][HEIGHT];
 
@@ -99,8 +108,13 @@ int AI::alphabeta(int** tab, int color, bool whoPlays, int howDeep, int alphaArg
                 int betaResult = alphabeta(tab, myColor, whoPlays, howDeep-1, alpha, beta);
                 beta = (beta < betaResult ? beta : betaResult);
 
-//                if(alpha >= beta) //odcinanie galezi alpha (???) TODO!
-//                    break;
+                if(alpha >= beta) //odcinanie galezi
+                {
+                    for(int i = 0; i < WIDTH; ++i) //przywracanie stanu tablicy sprzed ruchu
+                        for(int j = 0; j < HEIGHT; ++j)
+                            tab[i][j] = tabCopy[i][j];
+                    break;
+                }
 
                 for(int i = 0; i < WIDTH; ++i) //przywracanie stanu tablicy sprzed ruchu
                     for(int j = 0; j < HEIGHT; ++j)
@@ -130,8 +144,13 @@ int AI::alphabeta(int** tab, int color, bool whoPlays, int howDeep, int alphaArg
                 int alphaResult = alphabeta(tab, myColor, !whoPlays, howDeep-1, alpha, beta);
                 alpha = (alpha > alphaResult ? alpha : alphaResult);
 
-//                if(alpha >= beta) //odcinanie galezi beta (???) TODO!
-//                    break;
+                if(alpha >= beta) //odcinanie galezi
+                {
+                    for(int i = 0; i < WIDTH; ++i)
+                        for(int j = 0; j < HEIGHT; ++j)
+                            tab[i][j] = tabCopy[i][j];
+                    break;
+                }
 
                 for(int i = 0; i < WIDTH; ++i)
                     for(int j = 0; j < HEIGHT; ++j)
@@ -139,56 +158,18 @@ int AI::alphabeta(int** tab, int color, bool whoPlays, int howDeep, int alphaArg
             }//if
         }//for
         return alpha;
-    }
+    }//else
 }
 
-bool AI::checkWin(int** board)
+long long int AI::evaluate(int** tab, int color)
 {
-    int actual;
-    for(int i = 0; i < WIDTH; ++i)   // tests 4 fields vertically to up
-        for(int j = HEIGHT-1; j > HEIGHT-4; --j)
-            if(board[i][j] != 0)
-            {
-                actual = board[i][j];
-                if(actual == board[i][j-1] && actual == board[i][j-2] && actual == board[i][j-3])
-                    return true;
-            }
-    for(int i = 0; i < WIDTH-3; ++i)   // tests 4 fields horizontally to right
-        for(int j = 0; j < HEIGHT; ++j)
-            if(board[i][j] != 0)
-            {
-                actual = board[i][j];
-                if(actual == board[i+1][j] && actual == board[i+2][j] && actual == board[i+3][j])
-                    return true;
-            }
-    for(int i = 0; i < WIDTH-3; ++i)   // tests 4 fields across to up and right
-        for(int j = HEIGHT-1; j >  HEIGHT-4; --j)
-            if(board[i][j] != 0)
-            {
-                actual = board[i][j];
-                if(actual == board[i+1][j-1] && actual == board[i+2][j-2] && actual == board[i+3][j-3])
-                    return true;
-            }
-    for(int i = 0; i < WIDTH-3; ++i)   // tests 4 fields across to down and right
-        for(int j = 0; j < HEIGHT-3; ++j)
-            if(board[i][j] != 0)
-            {
-                actual = board[i][j];
-                if(actual == board[i+1][j+1] && actual == board[i+2][j+2] && actual == board[i+3][j+3])
-                    return true;
-            }
-    return false;
-}
-
-int AI::evaluate(int** tab, int color)
-{
-    int value = 0;
+    long long int value = 0;
 
     for(int i = 0; i < WIDTH; ++i)
         for(int j = HEIGHT-1; j >= 0; --j)
         {
             if(tab[i][j] == 0)
-                continue;
+                break;
 
             int actColor = tab[i][j];
             int oppColor = (actColor == RED ? YELLOW : RED);
@@ -317,4 +298,62 @@ int AI::evaluate(int** tab, int color)
         }//for
 
     return value;
+}
+
+int AI::checkWin(int** board)
+{
+    int actual;
+    for(int i = 0; i < WIDTH; ++i)   // tests 4 fields vertically to up
+        for(int j = HEIGHT-1; j > HEIGHT-4; --j)
+            if(board[i][j] != 0)
+            {
+                actual = board[i][j];
+                if(actual == board[i][j-1] && actual == board[i][j-2] && actual == board[i][j-3])
+                {
+                    if(actual == RED)
+                        return RED;
+                    else
+                        return YELLOW;
+                }
+            }
+    for(int i = 0; i < WIDTH-3; ++i)   // tests 4 fields horizontally to right
+        for(int j = 0; j < HEIGHT; ++j)
+            if(board[i][j] != 0)
+            {
+                actual = board[i][j];
+                if(actual == board[i+1][j] && actual == board[i+2][j] && actual == board[i+3][j])
+                {
+                    if(actual == RED)
+                        return RED;
+                    else
+                        return YELLOW;
+                }
+            }
+    for(int i = 0; i < WIDTH-3; ++i)   // tests 4 fields across to up and right
+        for(int j = HEIGHT-1; j >  HEIGHT-4; --j)
+            if(board[i][j] != 0)
+            {
+                actual = board[i][j];
+                if(actual == board[i+1][j-1] && actual == board[i+2][j-2] && actual == board[i+3][j-3])
+                {
+                    if(actual == RED)
+                        return RED;
+                    else
+                        return YELLOW;
+                }
+            }
+    for(int i = 0; i < WIDTH-3; ++i)   // tests 4 fields across to down and right
+        for(int j = 0; j < HEIGHT-3; ++j)
+            if(board[i][j] != 0)
+            {
+                actual = board[i][j];
+                if(actual == board[i+1][j+1] && actual == board[i+2][j+2] && actual == board[i+3][j+3])
+                {
+                    if(actual == RED)
+                        return RED;
+                    else
+                        return YELLOW;
+                }
+            }
+    return 0;
 }
