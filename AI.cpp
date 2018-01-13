@@ -3,7 +3,6 @@
 
 AI::AI(int depthArg)
 {
-    cout << "hej, tu AI" << endl;
     srand( time( NULL ) );
     depth = depthArg;
 }
@@ -13,25 +12,15 @@ AI::~AI()
     //dtor
 }
 
-int AI::doRandMove()
-{
-    int number = rand();
-    cout << "Wylosowano: " << number << endl;
-
-    int goodNumber = number%7;
-    cout << "Pionek na: " << goodNumber << endl;
-
-    return goodNumber;
-}
-
 int AI::makeMove(int** tab, int color)
 {
     int column;
-    long long int maxValue = -100000;
+    long long int maxValue = -INF;
 
-    cout << "\tkolumna:\t0\t1\t2\t3\t4\t5\t6" << endl;
+    cout << "\tcolumn:\t\t0\t1\t2\t3\t4\t5\t6" << endl;
     cout << "\tvalue:\t\t";
 
+    long long int alpha = -INF;
     for(int k = 0; k < WIDTH; ++k)
         if(tab[k][0] == 0)
         {
@@ -48,10 +37,10 @@ int AI::makeMove(int** tab, int color)
                     break;
                 }
 
-            long long int value = alphabeta(tab, color, false, depth-1, -1000000, 1000000);
-            if(value > maxValue)
+            long long int value = alphabeta(tab, color, false, depth-1, alpha, INF);
+            if(value > alpha)
             {
-                maxValue = value;
+                alpha = value;
                 column = k;
             }
             cout << value << "\t";
@@ -62,6 +51,7 @@ int AI::makeMove(int** tab, int color)
         }
         else
             cout << "--\t";
+
     cout << endl;
 
     return column;
@@ -69,7 +59,7 @@ int AI::makeMove(int** tab, int color)
 
 long long int AI::alphabeta(int** tab, int color, bool whoPlays, int howDeep, int alphaArg, int betaArg)
 {
-    if(howDeep == 0)
+    if(howDeep == 0 || !isFreeSpace(tab))
         return evaluate(tab, color);
 
     int myColor = (color == RED ? RED : YELLOW);
@@ -356,4 +346,13 @@ int AI::checkWin(int** board)
                 }
             }
     return 0;
+}
+
+bool AI::isFreeSpace(int** tab)
+{
+    for(int i = 0; i < WIDTH; ++i)
+        if(tab[i][0] == 0)
+            return true;
+
+    return false;
 }
