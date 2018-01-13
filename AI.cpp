@@ -44,6 +44,7 @@ int AI::makeMove(int** tab, int color)
         plik.close();
     }
 
+    long long int alpha = -INF;
     for(int k = 0; k < WIDTH; ++k)
         if(tab[k][0] == 0)
         {
@@ -60,10 +61,10 @@ int AI::makeMove(int** tab, int color)
                     break;
                 }
 
-            long long int value = alphabeta(tab, color, false, depth-1, -INF, INF);
-            if(value > maxValue)
+            long long int value = alphabeta(tab, color, false, depth-1, alpha, INF);
+            if(value > alpha)
             {
-                maxValue = value;
+                alpha = value;
                 column = k;
             }
             cout << value << "\t";
