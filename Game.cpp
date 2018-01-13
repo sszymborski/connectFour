@@ -2,12 +2,13 @@
 
 #include <iostream>
 
-Game::Game()
+Game::Game(int depth1, int depth2)
 {
     whoPlays = 1;
 
     gui = new Gui();
-    ai = new AI(7);
+    ai1 = new AI(depth1);
+    ai2 = new AI(depth2);
     board = new int* [WIDTH];
 
     for(int i = 0; i < WIDTH; ++i)
@@ -22,7 +23,8 @@ Game::Game()
 Game::~Game()
 {
     delete gui;
-    delete ai;
+    delete ai1;
+    delete ai2;
     for(int i = 0; i < WIDTH; ++i)
         delete board[i];
     delete board;
@@ -43,11 +45,11 @@ void Game::start()
     int first = 1; // zmienna ktora odpowiada za mozliwosc ponownego ruchu gracza bez ruchu ai w momencie braku miejsca w kolumnie
     int freeBlocks = WIDTH*HEIGHT;
 
-    if(mode == 2)
+    if(mode == AIvsP)
     {
         do
         {
-            aiNumber = ai -> makeMove(board, YELLOW);
+            aiNumber = ai1 -> makeMove(board, YELLOW);
         }
         while(board[aiNumber][0] != 0);
 
@@ -69,11 +71,11 @@ void Game::start()
 
     }
 
-    if(mode!=-1)
+    if(mode != -1)
         gui->display(board);
 
 
-    while(mode!=-1)
+    while(mode != -1)
     {
         colNumber = gui->getInput();
         //dzieki temu if-owi obraz rysowany jest nie bez przerwy, ale tylko jak jest jakis input
@@ -91,7 +93,7 @@ void Game::start()
                 }
                 break;
             }
-            if(mode == 1 || mode == 2)       // gracz vs ai lub ai vs gracz(wtedy ruch byl wczesniej juz)
+            if(mode == PvsAI || mode == AIvsP)       // gracz vs ai lub ai vs gracz (wtedy ruch byl juz wczesniej)
             {
                 if(board[colNumber][0] != 0) //jesli w kolumnie nie ma ju¿ miejsca na klocek
                     continue;
@@ -145,7 +147,7 @@ void Game::start()
 
                 do
                 {
-                    colNumber = ai -> makeMove(board, YELLOW);
+                    colNumber = ai1 -> makeMove(board, YELLOW);
                 }
                 while(board[colNumber][0] != 0);
 
@@ -166,21 +168,21 @@ void Game::start()
                         break;
                     }
             }
-            else if (mode == 3)    // ai kontra ai
+            else if (mode == AIvsAI)    // ai kontra ai
             {
                 do
                 {
-                    if(whoPlays)
-                        colNumber = ai -> makeMove(board, RED);
+                    if(whoPlays) //jesli gra pierwszy gracz
+                        colNumber = ai1 -> makeMove(board, RED);
                     else
-                        colNumber = ai -> makeMove(board, YELLOW);
+                        colNumber = ai2 -> makeMove(board, YELLOW);
                 }
                 while(board[colNumber][0] != 0);
 
                 for(int j = HEIGHT-1; j >= 0; --j)
                     if(board[colNumber][j] == 0)
                     {
-                        if(whoPlays)
+                        if(whoPlays) //pierwszy gracz
                         {
                             cout << "Red on " << "\t" << "\t" << colNumber << " " << j << endl;
                             fstream plik("log.txt", ios::out | ios::app);
@@ -195,7 +197,7 @@ void Game::start()
                             --freeBlocks;
                             break;
                         }
-                        else
+                        else //drugi gracz
                         {
                             cout << "Yellow on " << "\t" << colNumber << " " << j << endl;
                             fstream plik("log.txt", ios::out | ios::app);
@@ -247,10 +249,10 @@ void Game::start()
 }
 
 
-bool Game::checkWin()   // tests whether someone has won on the board at the moment
+bool Game::checkWin()
 {
     int actual;
-    for(int i = 0; i < WIDTH; ++i)   // tests 4 fields vertically to up
+    for(int i = 0; i < WIDTH; ++i)   //4s vertically
         for(int j = HEIGHT-1; j > HEIGHT-4; --j)
             if(board[i][j] != 0)
             {
@@ -278,7 +280,7 @@ bool Game::checkWin()   // tests whether someone has won on the board at the mom
                     return true;
                 }
             }
-    for(int i = 0; i < WIDTH-3; ++i)   // tests 4 fields horizontally to right
+    for(int i = 0; i < WIDTH-3; ++i)   //4s horizontally
         for(int j = 0; j < HEIGHT; ++j)
             if(board[i][j] != 0)
             {
@@ -306,7 +308,7 @@ bool Game::checkWin()   // tests whether someone has won on the board at the mom
                     return true;
                 }
             }
-    for(int i = 0; i < WIDTH-3; ++i)   // tests 4 fields across to up and right
+    for(int i = 0; i < WIDTH-3; ++i)   //4s diagonally up-right
         for(int j = HEIGHT-1; j >  HEIGHT-4; --j)
             if(board[i][j] != 0)
             {
@@ -334,7 +336,7 @@ bool Game::checkWin()   // tests whether someone has won on the board at the mom
                     return true;
                 }
             }
-    for(int i = 0; i < WIDTH-3; ++i)   // tests 4 fields across to down and right
+    for(int i = 0; i < WIDTH-3; ++i)   // 4s diagonally down-right
         for(int j = 0; j < HEIGHT-3; ++j)
             if(board[i][j] != 0)
             {

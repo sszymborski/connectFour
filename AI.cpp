@@ -30,16 +30,16 @@ AI::~AI()
 int AI::makeMove(int** tab, int color)
 {
     int column;
-    long long int maxValue = -1000000;
+    long long int maxValue = -INF;
 
-    cout << "\tkolumna:\t0\t1\t2\t3\t4\t5\t6" << endl;
+    cout << "\tcolumn:\t\t0\t1\t2\t3\t4\t5\t6" << endl;
     cout << "\tvalue:\t\t";
 
     fstream plik("log.txt", ios::out | ios::app);
     if(plik.good())
     {
         plik.seekp(0, ios_base::end);
-        plik << "\tkolumna:\t0\t1\t2\t3\t4\t5\t6" << endl;
+        plik << "\tcolumn:\t\t0\t1\t2\t3\t4\t5\t6" << endl;
         plik << "\tvalue:\t\t";
         plik.close();
     }
@@ -60,7 +60,7 @@ int AI::makeMove(int** tab, int color)
                     break;
                 }
 
-            long long int value = alphabeta(tab, color, false, depth-1, -1000000, 1000000);
+            long long int value = alphabeta(tab, color, false, depth-1, -INF, INF);
             if(value > maxValue)
             {
                 maxValue = value;

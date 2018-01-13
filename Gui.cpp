@@ -66,12 +66,12 @@ int Gui::showStartWindow() //funkcja obslugujaca mysz na ekranie
 
         if(mb == 1)
         {
-            if(mx>90 && mx<210 && my>230 &&my<380)
-                return 1;
-            if(mx>290 && mx<410 && my>230 &&my<380)
-                return 2;
-            if(mx>490 && mx<610 && my>230 &&my<380)
-                return 3;
+            if(mx > 90 && mx < 210 && my > 230 && my < 380)
+                return PvsAI;
+            if(mx > 290 && mx < 410 && my > 230 && my < 380)
+                return AIvsP;
+            if(mx > 490 && mx < 610 && my > 230 && my < 380)
+                return AIvsAI;
         }
     }
     return -1;

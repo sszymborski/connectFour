@@ -9,20 +9,23 @@
 #define HEIGHT 6
 #define RED 1
 #define YELLOW -1
+#define PvsAI 1
+#define AIvsP 2
+#define AIvsAI 3
 
 using namespace std;
 
 class Game
 {
-    int mode; //rozroznia tryb PvsAI (1), AIvsP (2), AIvsAI (3)
+    int mode; //rozroznia tryb P vs AI (1), AI vs P (2), AI vs AI (3)
     int **board;
     bool whoPlays;
 
     Gui *gui;
-    AI *ai;
+    AI *ai1, *ai2;
 
 public:
-    Game();
+    Game(int depth1, int depth2);
     ~Game();
 
     void start();
