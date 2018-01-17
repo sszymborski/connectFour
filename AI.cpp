@@ -98,13 +98,13 @@ long long int AI::alphabeta(int** tab, int color, bool whoPlays, int howDeep, in
                 int betaResult = alphabeta(tab, myColor, true, howDeep-1, alpha, beta);
                 beta = (beta < betaResult ? beta : betaResult);
 
-                if(alpha >= beta) //odcinanie galezi
+                /*if(alpha >= beta) //odcinanie galezi
                 {
                     for(int i = 0; i < WIDTH; ++i) //przywracanie stanu tablicy sprzed ruchu
                         for(int j = 0; j < HEIGHT; ++j)
                             tab[i][j] = tabCopy[i][j];
                     break;
-                }
+                }*/
 
                 for(int i = 0; i < WIDTH; ++i) //przywracanie stanu tablicy sprzed ruchu
                     for(int j = 0; j < HEIGHT; ++j)
@@ -134,13 +134,13 @@ long long int AI::alphabeta(int** tab, int color, bool whoPlays, int howDeep, in
                 int alphaResult = alphabeta(tab, myColor, false, howDeep-1, alpha, beta);
                 alpha = (alpha > alphaResult ? alpha : alphaResult);
 
-                if(alpha >= beta) //odcinanie galezi
+                /*if(alpha >= beta) //odcinanie galezi
                 {
                     for(int i = 0; i < WIDTH; ++i)
                         for(int j = 0; j < HEIGHT; ++j)
                             tab[i][j] = tabCopy[i][j];
                     break;
-                }
+                }*/
 
                 for(int i = 0; i < WIDTH; ++i)
                     for(int j = 0; j < HEIGHT; ++j)
