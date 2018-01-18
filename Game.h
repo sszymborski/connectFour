@@ -4,6 +4,10 @@
 #include "Gui.h"
 #include "AI.h"
 
+#include <chrono>
+
+#include <fstream>
+
 #define WIDTH 7
 #define HEIGHT 6
 #define RED 1
@@ -20,6 +24,12 @@ class Game
     int **board;
     bool whoPlays;
 
+    int potrzebnyCzerwony;
+    int potrzebnyZolty;
+
+    int ruchyZoltego;
+    int ruchyCzerwonego;
+
     Gui *gui;
     AI *ai1, *ai2;
 
@@ -30,7 +40,7 @@ public:
     void start();
 
 private:
-    bool checkWin();
+    int checkWin();
 };
 
 #endif // GAME_H

@@ -4,6 +4,13 @@
 
 Game::Game(int depth1, int depth2)
 {
+
+    potrzebnyCzerwony = depth1;
+    potrzebnyZolty = depth2;
+
+    ruchyCzerwonego = 0;
+    ruchyZoltego = 0;
+
     whoPlays = 1;
 
     gui = new Gui();
@@ -32,8 +39,12 @@ Game::~Game()
 
 void Game::start()
 {
-    mode = gui->showStartWindow();
+   // mode = gui->showStartWindow();
     cout << "Tryb to " << mode << endl;
+
+    mode = AIvsAI;
+    auto time1 = std::chrono::nanoseconds::zero();
+    auto time2 = std::chrono::nanoseconds::zero();
 
     int colNumber, aiNumber;
     int first = 1; // zmienna ktora odpowiada za mozliwosc ponownego ruchu gracza bez ruchu ai w momencie braku miejsca w kolumnie
@@ -66,7 +77,7 @@ void Game::start()
     {
         colNumber = gui->getInput();
         //dzieki temu if-owi obraz rysowany jest nie bez przerwy, ale tylko jak jest jakis input
-        if(colNumber != -2) //kiedy zostal wcisniety klawisz myszki lub ESC
+        if(1)//colNumber != -2) //kiedy zostal wcisniety klawisz myszki lub ESC
         {
             if(colNumber == -1) // jesli esc
             {
@@ -87,9 +98,15 @@ void Game::start()
                     }
                 gui -> display(board);
 
-                bool isWon = checkWin();
+                int isWon = checkWin();
                 if(isWon || freeBlocks == 0) // jesli wygrana lub remis
                 {
+
+
+
+
+
+
                     if(freeBlocks == 0 && !isWon)
                         cout << "DRAW" << endl;
 
@@ -124,9 +141,25 @@ void Game::start()
                 do
                 {
                     if(whoPlays) //jesli gra pierwszy gracz
+                    {
+                        ++ruchyCzerwonego;
+                        auto startTime1 = std::chrono::high_resolution_clock::now();
                         colNumber = ai1 -> makeMove(board, RED);
+                        auto stopTime1 = std::chrono::high_resolution_clock::now();
+                        cout << "1. Czas rundy: " << std::chrono::duration_cast<std::chrono::nanoseconds>(stopTime1-startTime1).count() << endl;
+                        time1 += stopTime1 - startTime1;
+                        cout << "2. Czas calosci ruchow czerwonego: " << std::chrono::duration_cast<std::chrono::nanoseconds>(time1).count() << endl;
+                    }
                     else
+                    {
+                        ++ruchyZoltego;
+                        auto startTime2 = std::chrono::high_resolution_clock::now();
                         colNumber = ai2 -> makeMove(board, YELLOW);
+                        auto stopTime2 = std::chrono::high_resolution_clock::now();
+                        cout << "1. Czas rundy: " << std::chrono::duration_cast<std::chrono::nanoseconds>(stopTime2-startTime2).count() << endl;
+                        time2 += stopTime2 - startTime2;
+                        cout << "2. Czas calosci ruchow zoltego: " << std::chrono::duration_cast<std::chrono::nanoseconds>(time2).count() << endl;
+                    }
                 }
                 while(board[colNumber][0] != 0);
 
@@ -153,19 +186,51 @@ void Game::start()
             }
             gui->display(board);
 
-            bool isWon = checkWin();
+            int isWon = checkWin();
             if(isWon || freeBlocks == 0) // jesli wygrana lub remis
             {
+
+                    fstream plik("out.txt", ios::out | ios::app);
+                    if(plik.good())
+                    {
+                        plik.seekp(0, ios_base::end);
+                        plik <<
+                        potrzebnyCzerwony << " " <<
+                        potrzebnyZolty <<  " " <<
+                        std::chrono::duration_cast<std::chrono::nanoseconds>(time1).count()  <<  " " <<
+                        std::chrono::duration_cast<std::chrono::nanoseconds>(time2).count()  << " " <<
+                        std::chrono::duration_cast<std::chrono::nanoseconds>(time1 + time2).count() <<  " " ;
+
+
+                        if(freeBlocks == 0 && !isWon)
+                        {
+                            plik << 0 <<  " " ;
+                        }
+                        else
+                            {
+                            plik << isWon <<  " " ;
+                            }
+
+                        plik <<
+                        ruchyCzerwonego << " " <<
+                        ruchyZoltego << endl;
+
+
+                        plik.close();
+                    }
+
+
+
                 if(freeBlocks == 0 && !isWon)
                     cout << "DRAW" << endl;
 
                 cout << "END OF THE GAME" << endl;
 
-                while(1)
+              /*  while(1)
                 {
                     if(gui->getInput() == -1)
                         break;
-                }
+                }*/
                 break;
             }
         }
@@ -173,7 +238,7 @@ void Game::start()
 }
 
 
-bool Game::checkWin()
+int Game::checkWin()
 {
     int actual;
     for(int i = 0; i < WIDTH; ++i)   //4s vertically
@@ -189,7 +254,7 @@ bool Game::checkWin()
                          << i << "x" << j-2 <<", "
                          << i << "x" << j-3 << "."
                          << endl;
-                    return true;
+                    return actual;
                 }
             }
     for(int i = 0; i < WIDTH-3; ++i)   //4s horizontally
@@ -205,7 +270,7 @@ bool Game::checkWin()
                          << i+2 << "x" << j <<", "
                          << i+3 << "x" << j << "."
                          << endl;
-                    return true;
+                    return actual;
                 }
             }
     for(int i = 0; i < WIDTH-3; ++i)   //4s diagonally up-right
@@ -221,7 +286,7 @@ bool Game::checkWin()
                          << i+2 << "x" << j-2 <<", "
                          << i+3 << "x" << j-3 << "."
                          << endl;
-                    return true;
+                    return actual;
                 }
             }
     for(int i = 0; i < WIDTH-3; ++i)   // 4s diagonally down-right
@@ -237,8 +302,8 @@ bool Game::checkWin()
                          << i+2 << "x" << j+2 <<", "
                          << i+3 << "x" << j+3 << "."
                          << endl;
-                    return true;
+                    return actual;
                 }
             }
-    return false;
+    return 0;
 }
